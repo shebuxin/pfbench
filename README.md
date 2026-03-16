@@ -134,6 +134,7 @@ conda activate pfbench
 pfbench doctor
 pfbench generate-demo --config configs/dataset.yaml --out examples/demo_questions.jsonl
 pfbench report --dataset examples/demo_questions.jsonl
+pfbench build-release --config configs/release_v1.yaml --out datasets/pfbench/v1
 pytest -q
 ```
 
@@ -143,6 +144,7 @@ You can run the same commands through the module entrypoint:
 python -m pfbench.cli doctor
 python -m pfbench.cli generate-demo --config configs/dataset.yaml --out examples/demo_questions.jsonl
 python -m pfbench.cli report --dataset examples/demo_questions.jsonl
+python -m pfbench.cli build-release --config configs/release_v1.yaml --out datasets/pfbench/v1
 ```
 
 ## Demo outputs
@@ -159,6 +161,29 @@ python -m pfbench.cli report --dataset examples/demo_questions.jsonl
 `report` writes:
 
 - `reports/pfbench_demo_report.md`
+
+## Frozen release package
+
+The submission-ready release workflow writes an independent archive-style directory:
+
+- `datasets/pfbench/v1/questions.jsonl`
+- `datasets/pfbench/v1/scenarios.jsonl`
+- `datasets/pfbench/v1/failed_scenarios.jsonl`
+- `datasets/pfbench/v1/manifest.json`
+- `datasets/pfbench/v1/report.md`
+- `datasets/pfbench/v1/FAIR_METADATA.json`
+- `datasets/pfbench/v1/VALIDATION_SUMMARY.json`
+- `datasets/pfbench/v1/CHECKSUMS.sha256`
+- `datasets/pfbench/v1/README.md`
+- `datasets/pfbench/v1/RELEASE_NOTES.md`
+- `datasets/pfbench/v1/LICENSE_AND_REDISTRIBUTION.md`
+- `datasets/pfbench/v1/FIELD_DICTIONARY.md`
+- `datasets/pfbench/v1/SCHEMA_DOCS.md`
+- `datasets/pfbench/v1/QUALITY_REPORT.md`
+- `datasets/pfbench/v1/SUBMISSION_FRAMING.md`
+- copied `configs/` and `schemas/` for standalone validation
+
+This folder is meant to be uploaded unchanged to the eventual third-party data repository.
 
 ## Default demo scale
 
@@ -202,4 +227,5 @@ Core code layout:
 - Scenario generation is deterministic with respect to the configured seed.
 - Extended cases rely on `pandapower` being installed in the active environment.
 - The current solver assumes a single slack bus and does not enforce generator reactive power limits.
+- The frozen release package is the primary archival artifact for a data-paper submission; the codebase is the supporting generation method.
 - Later phases can add OpenAI runner and agent benchmark functionality without changing the Phase 1 truth pipeline.

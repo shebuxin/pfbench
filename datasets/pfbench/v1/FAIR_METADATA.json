@@ -1,0 +1,235 @@
+{
+  "title": "pfbench v1.0.0",
+  "dataset_id": "pfbench",
+  "version": "1.0.0",
+  "release_status": "frozen_local_package",
+  "release_timestamp": "2026-03-15T00:00:00Z",
+  "description": "Structured power-flow benchmark release containing full scenario records, question items, schemas, validation summaries, and release documentation.",
+  "subjects": [
+    "power systems",
+    "benchmark datasets",
+    "power flow",
+    "structured evaluation"
+  ],
+  "language": "en",
+  "format": [
+    "jsonl",
+    "parquet",
+    "json",
+    "markdown",
+    "yaml",
+    "text"
+  ],
+  "access": {
+    "current_location": ".",
+    "upload_required": true,
+    "access_instructions": "Upload this directory unchanged to the target repository and then add the assigned DOI or URL to the manuscript and project README."
+  },
+  "interoperability": {
+    "schemas_path": "schemas/",
+    "question_schema": "schemas/question_item.schema.json",
+    "scenario_schema": "schemas/scenario_record.schema.json",
+    "parquet_exports_included": true
+  },
+  "reuse": {
+    "intended_use": [
+      "offline benchmark evaluation",
+      "structured-output tool-use evaluation",
+      "dataset descriptor publication"
+    ],
+    "limitations": [
+      "single-slack-bus solver assumption",
+      "reactive power limits not enforced",
+      "derived from benchmark cases rather than operational utility data"
+    ],
+    "license_note": "See LICENSE_AND_REDISTRIBUTION.md for upstream attribution and redistribution guidance."
+  },
+  "coverage": {
+    "cases": [
+      "case14",
+      "case30",
+      "case39",
+      "case57",
+      "case118",
+      "case145",
+      "case300"
+    ],
+    "num_scenarios": 124,
+    "num_questions": 1240,
+    "query_families": [
+      "direct_bus_vm",
+      "direct_bus_va",
+      "argmin_bus_vm",
+      "argmax_bus_va_abs",
+      "direct_branch_p_from",
+      "direct_branch_q_from",
+      "max_branch_abs_p_from",
+      "max_branch_abs_q_from",
+      "compare_ac_dc_branch_p_from",
+      "is_voltage_violation_present"
+    ],
+    "split_ratios_target": {
+      "dev": 0.7,
+      "public_test": 0.15,
+      "private_test": 0.15
+    },
+    "split_counts_observed": {
+      "private_test": 170,
+      "dev": 860,
+      "public_test": 210
+    }
+  },
+  "quality_control": {
+    "validation_passed": true,
+    "manifest_counts_match_files": true,
+    "question_ids_unique": true,
+    "scenario_ids_unique": true,
+    "scenario_split_leakage_count": 0
+  },
+  "files": [
+    {
+      "path": "FAIR_METADATA.json",
+      "description": "Release-level metadata focused on findability, accessibility, interoperability, and reuse.",
+      "size_bytes": 6833,
+      "format": "json"
+    },
+    {
+      "path": "FIELD_DICTIONARY.md",
+      "description": "Field-level descriptions for question and scenario artifacts.",
+      "size_bytes": 4155,
+      "format": "md"
+    },
+    {
+      "path": "LICENSE_AND_REDISTRIBUTION.md",
+      "description": "Redistribution and attribution guidance for derived case data.",
+      "size_bytes": 1596,
+      "format": "md"
+    },
+    {
+      "path": "QUALITY_REPORT.md",
+      "description": "Data quality, validation, and known-limitations summary.",
+      "size_bytes": 2514,
+      "format": "md"
+    },
+    {
+      "path": "README.md",
+      "description": "Dataset card and access guide for the release package.",
+      "size_bytes": 5262,
+      "format": "md"
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "description": "Release-specific notes for version tracking and downstream repositories.",
+      "size_bytes": 1327,
+      "format": "md"
+    },
+    {
+      "path": "SCHEMA_DOCS.md",
+      "description": "Schema overview for release consumers.",
+      "size_bytes": 1204,
+      "format": "md"
+    },
+    {
+      "path": "SUBMISSION_FRAMING.md",
+      "description": "Paper-positioning notes that keep the dataset release as the primary artifact.",
+      "size_bytes": 1309,
+      "format": "md"
+    },
+    {
+      "path": "VALIDATION_SUMMARY.json",
+      "description": "Structured validation results for the frozen release.",
+      "size_bytes": 707,
+      "format": "json"
+    },
+    {
+      "path": "VERSION",
+      "description": "Plain-text release version.",
+      "size_bytes": 6,
+      "format": "text"
+    },
+    {
+      "path": "configs/generation_config.yaml",
+      "description": "Exact generation config used to build the frozen release.",
+      "size_bytes": 745,
+      "format": "yaml"
+    },
+    {
+      "path": "configs/solver.yaml",
+      "description": "Exact solver config used to build the frozen release.",
+      "size_bytes": 112,
+      "format": "yaml"
+    },
+    {
+      "path": "failed_scenarios.jsonl",
+      "description": "Retry-exhausted scenarios kept for diagnostics and transparency.",
+      "size_bytes": 0,
+      "format": "jsonl"
+    },
+    {
+      "path": "failed_scenarios.parquet",
+      "description": "Columnar export of the failed scenario log.",
+      "size_bytes": 636,
+      "format": "parquet"
+    },
+    {
+      "path": "manifest.json",
+      "description": "Release manifest with counts, paths, schema versions, and solver configuration digest.",
+      "size_bytes": 1058,
+      "format": "json"
+    },
+    {
+      "path": "questions.jsonl",
+      "description": "Question item collection for benchmark evaluation.",
+      "size_bytes": 2457750,
+      "format": "jsonl"
+    },
+    {
+      "path": "questions.parquet",
+      "description": "Columnar export of the question item collection.",
+      "size_bytes": 118459,
+      "format": "parquet"
+    },
+    {
+      "path": "reference_question_item.json",
+      "description": "One frozen question record for quick inspection.",
+      "size_bytes": 2025,
+      "format": "json"
+    },
+    {
+      "path": "reference_scenario_record.json",
+      "description": "One frozen scenario record for quick inspection.",
+      "size_bytes": 68805,
+      "format": "json"
+    },
+    {
+      "path": "report.md",
+      "description": "Human-readable summary report with coverage counts and metric ranges.",
+      "size_bytes": 1934,
+      "format": "md"
+    },
+    {
+      "path": "scenarios.jsonl",
+      "description": "Full scenario records with mutated network state and AC/DC results.",
+      "size_bytes": 30622599,
+      "format": "jsonl"
+    },
+    {
+      "path": "scenarios.parquet",
+      "description": "Columnar export of the scenario record collection.",
+      "size_bytes": 2263766,
+      "format": "parquet"
+    },
+    {
+      "path": "schemas/question_item.schema.json",
+      "description": "Frozen question schema for release consumers.",
+      "size_bytes": 2821,
+      "format": "json"
+    },
+    {
+      "path": "schemas/scenario_record.schema.json",
+      "description": "Frozen scenario schema for release consumers.",
+      "size_bytes": 4679,
+      "format": "json"
+    }
+  ]
+}

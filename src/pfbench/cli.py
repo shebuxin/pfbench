@@ -10,6 +10,7 @@ from pfbench import __version__
 from pfbench.evaluation import write_report
 from pfbench.generation import generate_dataset_bundle
 from pfbench.powerflow.cases import available_cases
+from pfbench.release import build_release_package
 from pfbench.utils import repo_root
 
 app = typer.Typer(help="pfbench command line interface")
@@ -74,6 +75,25 @@ def report(
     summary, report_path = write_report(dataset_path=dataset, report_path=out)
     typer.echo(json.dumps(summary, ensure_ascii=False, indent=2))
     typer.echo(f"Report written to {report_path}")
+
+
+@app.command("build-release")
+def build_release(
+    config: Path = typer.Option(Path("configs/release_v1.yaml"), exists=True, readable=True, help="Frozen release YAML config."),
+    out: Path = typer.Option(Path("datasets/pfbench/v1"), help="Output release directory."),
+) -> None:
+    release = build_release_package(config_path=config, release_dir=out)
+    typer.echo(json.dumps({
+        "dataset_id": release["manifest"]["dataset_id"],
+        "dataset_version": release["manifest"]["dataset_version"],
+        "num_questions": release["summary"]["num_questions"],
+        "num_scenarios": release["summary"]["num_scenarios"],
+        "num_failed_scenarios": release["summary"]["num_failed_scenarios"],
+        "release_dir": str(release["release_dir"]),
+        "questions_path": str(release["questions_path"]),
+        "report_path": str(release["report_path"]),
+        "checksum_path": str(release["checksum_path"]),
+    }, ensure_ascii=False, indent=2))
 
 
 def main() -> None:

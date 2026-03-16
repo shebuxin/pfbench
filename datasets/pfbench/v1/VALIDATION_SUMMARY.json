@@ -1,0 +1,25 @@
+{
+  "validation_passed": true,
+  "dataset_id": "pfbench",
+  "dataset_version": "1.0.0",
+  "num_questions_validated": 1240,
+  "num_scenarios_validated": 124,
+  "num_failed_scenarios_recorded": 0,
+  "num_gold_answers_validated": 1240,
+  "question_ids_unique": true,
+  "scenario_ids_unique": true,
+  "questions_reference_known_scenarios": true,
+  "scenario_ids_in_multiple_question_splits": 0,
+  "split_consistency_ok": true,
+  "scenario_artifacts_declared_by_questions": [
+    "scenarios.jsonl"
+  ],
+  "questions_per_scenario": {
+    "min": 10,
+    "max": 10
+  },
+  "missing_question_scenarios": [],
+  "split_mismatches": [],
+  "manifest_counts_match_files": true,
+  "validation_digest": "d439235c5907cc1a"
+}

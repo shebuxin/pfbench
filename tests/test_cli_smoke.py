@@ -12,6 +12,7 @@ def test_cli_help_smoke() -> None:
     assert result.exit_code == 0
     assert "generate-demo" in result.stdout
     assert "report" in result.stdout
+    assert "build-release" in result.stdout
 
 
 def test_doctor_smoke() -> None:

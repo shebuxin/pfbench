@@ -8,16 +8,21 @@ from pfbench.io import read_jsonl
 from pfbench.utils import repo_root
 
 
-def _auto_scenarios_path(dataset_path: Path) -> Path | None:
-    stem = dataset_path.stem.replace("_questions", "")
-    candidate = dataset_path.with_name(f"{stem}_scenarios.jsonl")
+def _related_jsonl_path(dataset_path: Path, canonical_name: str, suffix: str) -> Path | None:
+    if dataset_path.stem == canonical_name:
+        candidate = dataset_path.with_name(f"{suffix}.jsonl")
+    else:
+        stem = dataset_path.stem.replace(f"_{canonical_name}", "")
+        candidate = dataset_path.with_name(f"{stem}_{suffix}.jsonl")
     return candidate if candidate.exists() else None
+
+
+def _auto_scenarios_path(dataset_path: Path) -> Path | None:
+    return _related_jsonl_path(dataset_path, canonical_name="questions", suffix="scenarios")
 
 
 def _auto_failed_scenarios_path(dataset_path: Path) -> Path | None:
-    stem = dataset_path.stem.replace("_questions", "")
-    candidate = dataset_path.with_name(f"{stem}_failed_scenarios.jsonl")
-    return candidate if candidate.exists() else None
+    return _related_jsonl_path(dataset_path, canonical_name="questions", suffix="failed_scenarios")
 
 
 def _range(values: list[float]) -> dict[str, float] | None:

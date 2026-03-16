@@ -23,14 +23,20 @@ def _validate(record: dict[str, Any], schema: dict[str, Any]) -> None:
 
 
 def _sibling_scenarios_path(out_path: Path) -> Path:
+    if out_path.stem == "questions":
+        return out_path.with_name("scenarios.jsonl")
     return out_path.with_name(out_path.stem.replace("_questions", "") + "_scenarios.jsonl")
 
 
 def _sibling_manifest_path(out_path: Path) -> Path:
+    if out_path.stem == "questions":
+        return out_path.with_name("manifest.json")
     return out_path.with_name(out_path.stem.replace("_questions", "") + "_manifest.json")
 
 
 def _sibling_failed_scenarios_path(out_path: Path) -> Path:
+    if out_path.stem == "questions":
+        return out_path.with_name("failed_scenarios.jsonl")
     return out_path.with_name(out_path.stem.replace("_questions", "") + "_failed_scenarios.jsonl")
 
 
@@ -44,6 +50,10 @@ def generate_dataset_bundle(config_path: Path, out_path: Path) -> dict[str, Any]
     base_seed = int(dataset_cfg.get("seed", 42))
     cases = list(dataset_cfg.get("cases", ["case14"]))
     num_scenarios_per_case = int(dataset_cfg.get("num_scenarios_per_case", 2))
+    scenarios_per_case_cfg = {
+        str(case_name): int(count)
+        for case_name, count in dict(dataset_cfg.get("scenarios_per_case", {})).items()
+    }
     split_ratios = dict(dataset_cfg.get("split_ratios", {"dev": 0.6, "public_test": 0.2, "private_test": 0.2}))
     query_families = list(dataset_cfg.get("query_families", QUERY_FAMILIES))
     max_attempts = int(solver_cfg.get("retry", {}).get("max_attempts", 6))
@@ -63,7 +73,8 @@ def generate_dataset_bundle(config_path: Path, out_path: Path) -> dict[str, Any]
     failed_scenarios: list[dict[str, Any]] = []
 
     for case_name in cases:
-        for scenario_idx in range(num_scenarios_per_case):
+        case_scenarios = scenarios_per_case_cfg.get(case_name, num_scenarios_per_case)
+        for scenario_idx in range(case_scenarios):
             scenario_seed = stable_seed(dataset_id, base_seed, case_name, scenario_idx)
             solved_record: dict[str, Any] | None = None
             last_error: Exception | None = None

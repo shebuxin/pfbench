@@ -12,6 +12,7 @@ from pfbench.evaluation import write_report
 from pfbench.generation import generate_dataset_bundle
 from pfbench.io import load_yaml, read_jsonl
 from pfbench.utils import repo_root, stable_hex
+from pfbench.validation import cross_validate_scenarios
 
 _QUESTION_FIELDS = [
     ("dataset_id", "Dataset family identifier shared across all question items in the release."),
@@ -92,10 +93,14 @@ _DATASET_FILES = {
     "FIELD_DICTIONARY.md": "Field-level descriptions for question and scenario artifacts.",
     "SCHEMA_DOCS.md": "Schema overview for release consumers.",
     "QUALITY_REPORT.md": "Data quality, validation, and known-limitations summary.",
+    "CROSS_VALIDATION_SUMMARY.json": "Aggregate pandapower cross-validation summary for the frozen scenarios.",
+    "cross_validation_results.jsonl": "Per-scenario pandapower cross-validation metrics.",
+    "CROSS_VALIDATION_REPORT.md": "Human-readable pandapower cross-validation report.",
     "SUBMISSION_FRAMING.md": "Paper-positioning notes that keep the dataset release as the primary artifact.",
     "VERSION": "Plain-text release version.",
     "configs/generation_config.yaml": "Exact generation config used to build the frozen release.",
     "configs/solver.yaml": "Exact solver config used to build the frozen release.",
+    "configs/validation.yaml": "Exact pandapower cross-validation config used to validate the frozen release.",
     "schemas/question_item.schema.json": "Frozen question schema for release consumers.",
     "schemas/scenario_record.schema.json": "Frozen scenario schema for release consumers.",
     "CHECKSUMS.sha256": "SHA-256 checksums for every shipped file in the release package.",
@@ -228,6 +233,7 @@ def _release_readme(
     manifest: dict[str, Any],
     summary: dict[str, Any],
     validation: dict[str, Any],
+    cross_validation: dict[str, Any],
     dataset_cfg: dict[str, Any],
     release_dir: Path,
 ) -> str:
@@ -260,6 +266,8 @@ def _release_readme(
         f"- Query families: {', '.join(manifest['query_families'])}\n"
         f"- Split policy: deterministic hash-based assignment at scenario level with target ratios {split_text}\n"
         f"- Validation status: `validation_passed={validation['validation_passed']}`\n\n"
+        f"- External pandapower cross-validation: `all_passed={cross_validation['all_passed']}` "
+        f"across {cross_validation['num_scenarios']} scenarios\n\n"
         "## Intended use\n\n"
         "- Evaluate structured reasoning, tool use, and retrieval over solved power-flow scenarios.\n"
         "- Benchmark systems that can read scenario records and return JSON matching the provided response schema.\n"
@@ -282,6 +290,7 @@ def _release_readme(
         "## Caveats\n\n"
         "- Gold answers come only from the in-repo solvers and stored scenario records.\n"
         "- The AC solver assumes exactly one slack bus and does not enforce generator reactive power limits.\n"
+        "- Release validation includes a separate pandapower cross-validation pass over the frozen scenarios.\n"
         "- Scenario records preserve source-case fidelity and explicitly flag inherited metadata inconsistencies such as missing nominal voltages or pre-existing limit violations.\n"
         "- Failed scenarios are preserved instead of silently dropped, but the current default release recorded zero failed scenarios.\n"
         "- The code repository is a supporting generation artifact; the dataset collection in this directory is the primary archival object for a data-paper submission.\n"
@@ -388,6 +397,7 @@ def _quality_report(
     manifest: dict[str, Any],
     summary: dict[str, Any],
     validation: dict[str, Any],
+    cross_validation: dict[str, Any],
     dataset_cfg: dict[str, Any],
 ) -> str:
     mutation_lines = "\n".join(
@@ -441,7 +451,12 @@ def _quality_report(
         f"- Scenario records validated: {validation['num_scenarios_validated']}\n"
         f"- Question items validated: {validation['num_questions_validated']}\n"
         f"- Gold answers validated against response schemas: {validation['num_gold_answers_validated']}\n"
-        f"- Validation digest: `{validation['validation_digest']}`\n"
+        f"- Validation digest: `{validation['validation_digest']}`\n\n"
+        "## External pandapower cross-validation\n\n"
+        f"- Cross-validation passed for all scenarios: `{cross_validation['all_passed']}`\n"
+        f"- Scenarios cross-validated: {cross_validation['num_scenarios']}\n"
+        f"- Failed scenarios under tolerance checks: {cross_validation['num_failed']}\n"
+        f"- Scenarios requiring temporary base_kV fill before pandapower conversion: {cross_validation['num_scenarios_with_base_kv_fill']}\n"
     )
 
 
@@ -474,6 +489,7 @@ def _fair_metadata(
     manifest: dict[str, Any],
     summary: dict[str, Any],
     validation: dict[str, Any],
+    cross_validation: dict[str, Any],
     dataset_cfg: dict[str, Any],
     release_dir: Path,
 ) -> dict[str, Any]:
@@ -531,6 +547,8 @@ def _fair_metadata(
             "question_ids_unique": validation["question_ids_unique"],
             "scenario_ids_unique": validation["scenario_ids_unique"],
             "scenario_split_leakage_count": validation["scenario_ids_in_multiple_question_splits"],
+            "pandapower_cross_validation_all_passed": cross_validation["all_passed"],
+            "pandapower_cross_validation_failed_count": cross_validation["num_failed"],
         },
         "files": _file_inventory(release_dir),
     }
@@ -562,6 +580,9 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
         "failed_scenarios_path": "failed_scenarios.jsonl",
         "report_path": "report.md",
         "validation_summary_path": "VALIDATION_SUMMARY.json",
+        "cross_validation_summary_path": "CROSS_VALIDATION_SUMMARY.json",
+        "cross_validation_details_path": "cross_validation_results.jsonl",
+        "cross_validation_report_path": "CROSS_VALIDATION_REPORT.md",
         "fair_metadata_path": "FAIR_METADATA.json",
         "checksums_path": "CHECKSUMS.sha256",
     })
@@ -580,6 +601,7 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
 
     _copy_text_file(config_path, release_dir / "configs" / "generation_config.yaml")
     _copy_text_file(repo_root() / "configs" / "solver.yaml", release_dir / "configs" / "solver.yaml")
+    _copy_text_file(repo_root() / "configs" / "validation.yaml", release_dir / "configs" / "validation.yaml")
     _copy_text_file(repo_root() / "schemas" / "question_item.schema.json", release_dir / "schemas" / "question_item.schema.json")
     _copy_text_file(repo_root() / "schemas" / "scenario_record.schema.json", release_dir / "schemas" / "scenario_record.schema.json")
 
@@ -591,6 +613,18 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
         manifest=manifest,
     )
     _write_json(release_dir / "VALIDATION_SUMMARY.json", validation)
+    cross_validation, _ = cross_validate_scenarios(
+        scenarios_path=release_dir / "scenarios.jsonl",
+        config_path=repo_root() / "configs" / "validation.yaml",
+        summary_path=release_dir / "CROSS_VALIDATION_SUMMARY.json",
+        details_path=release_dir / "cross_validation_results.jsonl",
+        report_path=release_dir / "CROSS_VALIDATION_REPORT.md",
+    )
+    if not cross_validation["all_passed"]:
+        raise RuntimeError(
+            "Pandapower cross-validation failed for one or more scenarios. "
+            "Inspect CROSS_VALIDATION_SUMMARY.json and cross_validation_results.jsonl."
+        )
 
     (release_dir / "RELEASE_NOTES.md").write_text(
         _release_notes(manifest=manifest, summary=summary, validation=validation),
@@ -607,6 +641,7 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
             manifest=manifest,
             summary=summary,
             validation=validation,
+            cross_validation=cross_validation,
             dataset_cfg=dataset_cfg,
         ),
         encoding="utf-8",
@@ -621,6 +656,7 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
             manifest=manifest,
             summary=summary,
             validation=validation,
+            cross_validation=cross_validation,
             dataset_cfg=dataset_cfg,
             release_dir=release_dir,
         ),
@@ -631,6 +667,7 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
         manifest=manifest,
         summary=summary,
         validation=validation,
+        cross_validation=cross_validation,
         dataset_cfg=dataset_cfg,
         release_dir=release_dir,
     )
@@ -639,6 +676,7 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
         manifest=manifest,
         summary=summary,
         validation=validation,
+        cross_validation=cross_validation,
         dataset_cfg=dataset_cfg,
         release_dir=release_dir,
     )
@@ -651,6 +689,7 @@ def build_release_package(config_path: Path, release_dir: Path) -> dict[str, Any
         "manifest": manifest,
         "summary": summary,
         "validation": validation,
+        "cross_validation": cross_validation,
         "questions_path": questions_path,
         "report_path": report_path,
         "checksum_path": checksum_path,

@@ -10,6 +10,7 @@ RUNNER = CliRunner()
 def test_cli_help_smoke() -> None:
     result = RUNNER.invoke(app, ["--help"])
     assert result.exit_code == 0
+    assert "cross-validate" in result.stdout
     assert "generate-demo" in result.stdout
     assert "report" in result.stdout
     assert "build-release" in result.stdout

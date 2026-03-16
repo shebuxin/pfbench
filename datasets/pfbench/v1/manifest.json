@@ -37,6 +37,9 @@
   "package_root": ".",
   "report_path": "report.md",
   "validation_summary_path": "VALIDATION_SUMMARY.json",
+  "cross_validation_summary_path": "CROSS_VALIDATION_SUMMARY.json",
+  "cross_validation_details_path": "cross_validation_results.jsonl",
+  "cross_validation_report_path": "CROSS_VALIDATION_REPORT.md",
   "fair_metadata_path": "FAIR_METADATA.json",
   "checksums_path": "CHECKSUMS.sha256"
 }

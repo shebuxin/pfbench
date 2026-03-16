@@ -1,0 +1,26 @@
+cross_validation:
+  pandapower:
+    preprocess:
+      missing_base_kv_fill_kv: auto
+    ac:
+      algorithm: nr
+      calculate_voltage_angles: true
+      init: flat
+      enforce_q_lims: false
+      check_connectivity: true
+    dc:
+      check_connectivity: true
+    tolerances:
+      ac_bus_vm_pu: 1.0e-4
+      ac_bus_va_deg: 1.0e-2
+      ac_bus_pg_mw: 1.0e-4
+      ac_bus_qg_mvar: 1.0e-2
+      ac_branch_p_from_mw: 1.0e-3
+      ac_branch_q_from_mvar: 1.0e-2
+      ac_branch_p_to_mw: 1.0e-3
+      ac_branch_q_to_mvar: 1.0e-2
+      dc_bus_va_deg: 1.0e-2
+      dc_bus_pg_mw: 1.0e-4
+      dc_branch_p_from_mw: 1.0e-3
+      dc_branch_p_to_mw: 1.0e-3
+    report_top_n: 10

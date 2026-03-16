@@ -32,6 +32,7 @@ The repository now supports:
 - separate `scenario record` and `question item` artifacts
 - AC and DC power-flow results stored in scenario records
 - schema validation for scenarios and questions
+- pandapower cross-validation against frozen scenario solves
 - reference examples, demo bundle, manifest, and Markdown report
 - reproducibility, CLI smoke, case loader, schema, and solver tests
 
@@ -139,6 +140,7 @@ conda activate pfbench
 
 pfbench doctor
 pfbench generate-demo --config configs/dataset.yaml --out examples/demo_questions.jsonl
+pfbench cross-validate --scenarios examples/demo_scenarios.jsonl
 pfbench report --dataset examples/demo_questions.jsonl
 pfbench build-release --config configs/release_v1.yaml --out datasets/pfbench/v1
 pytest -q
@@ -149,6 +151,7 @@ You can run the same commands through the module entrypoint:
 ```bash
 python -m pfbench.cli doctor
 python -m pfbench.cli generate-demo --config configs/dataset.yaml --out examples/demo_questions.jsonl
+python -m pfbench.cli cross-validate --scenarios examples/demo_scenarios.jsonl
 python -m pfbench.cli report --dataset examples/demo_questions.jsonl
 python -m pfbench.cli build-release --config configs/release_v1.yaml --out datasets/pfbench/v1
 ```
@@ -168,6 +171,12 @@ python -m pfbench.cli build-release --config configs/release_v1.yaml --out datas
 
 - `reports/pfbench_demo_report.md`
 
+`cross-validate` writes:
+
+- `examples/demo_cross_validation_summary.json`
+- `examples/demo_cross_validation_results.jsonl`
+- `examples/demo_cross_validation_report.md`
+
 ## Frozen release package
 
 The submission-ready release workflow writes an independent archive-style directory:
@@ -186,6 +195,9 @@ The submission-ready release workflow writes an independent archive-style direct
 - `datasets/pfbench/v1/FIELD_DICTIONARY.md`
 - `datasets/pfbench/v1/SCHEMA_DOCS.md`
 - `datasets/pfbench/v1/QUALITY_REPORT.md`
+- `datasets/pfbench/v1/CROSS_VALIDATION_SUMMARY.json`
+- `datasets/pfbench/v1/cross_validation_results.jsonl`
+- `datasets/pfbench/v1/CROSS_VALIDATION_REPORT.md`
 - `datasets/pfbench/v1/SUBMISSION_FRAMING.md`
 - copied `configs/` and `schemas/` for standalone validation
 
@@ -239,6 +251,7 @@ Core code layout:
 - Scenario generation is deterministic with respect to the configured seed.
 - Extended cases rely on `pandapower` being installed in the active environment.
 - The current solver assumes a single slack bus and does not enforce generator reactive power limits.
+- Release builds run an external pandapower cross-validation pass over the frozen scenarios, explicitly reapply the mutated branch in-service state after `from_ppc(...)`, and store the results as first-class artifacts.
 - Scenario records preserve source-case fidelity and expose inherited metadata issues through `data_quality_flags` instead of silently normalizing them away.
 - `grid_reference.source_url` is pinned to an upstream tag or installed package version when a stable reference is available.
 - `is_voltage_violation_present` excludes buses already flagged as inherited source-case voltage-limit inconsistencies so the label reflects scenario-specific violations.

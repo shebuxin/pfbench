@@ -12,6 +12,7 @@ from pfbench.generation import generate_dataset_bundle
 from pfbench.powerflow.cases import available_cases
 from pfbench.release import build_release_package
 from pfbench.utils import repo_root
+from pfbench.validation import cross_validate_scenarios
 
 app = typer.Typer(help="pfbench command line interface")
 
@@ -29,6 +30,7 @@ def doctor() -> None:
                 "environment.yml",
                 "configs/dataset.yaml",
                 "configs/solver.yaml",
+                "configs/validation.yaml",
                 "schemas/question_item.schema.json",
                 "schemas/scenario_record.schema.json",
             ]
@@ -92,6 +94,27 @@ def leaderboard(
     typer.echo(f"Leaderboard written to {leaderboard_path}")
 
 
+@app.command("cross-validate")
+def cross_validate(
+    scenarios: Path = typer.Option(..., exists=True, readable=True, help="Scenario JSONL path."),
+    config: Path = typer.Option(Path("configs/validation.yaml"), exists=True, readable=True, help="Cross-validation YAML config."),
+    out: Path | None = typer.Option(None, help="Optional summary JSON path."),
+    details: Path | None = typer.Option(None, help="Optional detailed JSONL path."),
+    report: Path | None = typer.Option(None, help="Optional markdown report path."),
+) -> None:
+    summary, paths = cross_validate_scenarios(
+        scenarios_path=scenarios,
+        config_path=config,
+        summary_path=out,
+        details_path=details,
+        report_path=report,
+    )
+    typer.echo(json.dumps(summary, ensure_ascii=False, indent=2))
+    typer.echo(f"Cross-validation summary written to {paths['summary_path']}")
+    typer.echo(f"Cross-validation details written to {paths['details_path']}")
+    typer.echo(f"Cross-validation report written to {paths['report_path']}")
+
+
 @app.command("build-release")
 def build_release(
     config: Path = typer.Option(Path("configs/release_v1.yaml"), exists=True, readable=True, help="Frozen release YAML config."),
@@ -104,9 +127,11 @@ def build_release(
         "num_questions": release["summary"]["num_questions"],
         "num_scenarios": release["summary"]["num_scenarios"],
         "num_failed_scenarios": release["summary"]["num_failed_scenarios"],
+        "cross_validation_all_passed": release["cross_validation"]["all_passed"],
         "release_dir": str(release["release_dir"]),
         "questions_path": str(release["questions_path"]),
         "report_path": str(release["report_path"]),
+        "cross_validation_summary_path": str(release["release_dir"] / "CROSS_VALIDATION_SUMMARY.json"),
         "checksum_path": str(release["checksum_path"]),
     }, ensure_ascii=False, indent=2))
 

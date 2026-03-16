@@ -57,12 +57,16 @@ def test_build_release_package(tmp_path: Path) -> None:
     assert (release_dir / "FIELD_DICTIONARY.md").exists()
     assert (release_dir / "SCHEMA_DOCS.md").exists()
     assert (release_dir / "QUALITY_REPORT.md").exists()
+    assert (release_dir / "CROSS_VALIDATION_SUMMARY.json").exists()
+    assert (release_dir / "cross_validation_results.jsonl").exists()
+    assert (release_dir / "CROSS_VALIDATION_REPORT.md").exists()
     assert (release_dir / "SUBMISSION_FRAMING.md").exists()
     assert (release_dir / "VALIDATION_SUMMARY.json").exists()
     assert (release_dir / "FAIR_METADATA.json").exists()
     assert (release_dir / "CHECKSUMS.sha256").exists()
     assert (release_dir / "configs" / "generation_config.yaml").exists()
     assert (release_dir / "configs" / "solver.yaml").exists()
+    assert (release_dir / "configs" / "validation.yaml").exists()
     assert (release_dir / "schemas" / "question_item.schema.json").exists()
     assert (release_dir / "schemas" / "scenario_record.schema.json").exists()
 
@@ -70,6 +74,9 @@ def test_build_release_package(tmp_path: Path) -> None:
     assert validation["validation_passed"] is True
     assert validation["manifest_counts_match_files"] is True
     assert validation["questions_reference_known_scenarios"] is True
+    cross_validation = json.loads((release_dir / "CROSS_VALIDATION_SUMMARY.json").read_text(encoding="utf-8"))
+    assert cross_validation["all_passed"] is True
+    assert cross_validation["num_failed"] == 0
 
     license_text = (release_dir / "LICENSE_AND_REDISTRIBUTION.md").read_text(encoding="utf-8")
     assert "BSD 3-Clause" in license_text
@@ -88,3 +95,4 @@ def test_build_release_cli(tmp_path: Path) -> None:
     assert result.exit_code == 0, result.stdout
     assert (release_dir / "questions.jsonl").exists()
     assert "dataset_version" in result.stdout
+    assert "cross_validation_all_passed" in result.stdout

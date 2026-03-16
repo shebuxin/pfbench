@@ -1,0 +1,85 @@
+{
+  "dataset_id": "pfbench_demo",
+  "scenario_id": "scn_case14_648b44b17a15",
+  "question_id": "q_scn_case14_648b44b17a15_direct_bus_vm",
+  "source_case": "case14",
+  "split": "dev",
+  "query_family": "direct_bus_vm",
+  "evaluation_mode": "tool_or_structured_context_required",
+  "prompt": "Scenario ID: scn_case14_648b44b17a15. Base case case14; mutations: scale load at bus 3 by P×1.0122 and Q×0.9216; scale load at bus 6 by P×1.0778 and Q×0.9935; change transformer tap on branch 8 (4-7) from 0.978 to 0.9563. Using the scenario record for this modified network, run AC power flow and report the voltage magnitude at bus 12. Return JSON.",
+  "response_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "bus_id": {
+        "type": "integer"
+      },
+      "vm_pu": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "bus_id",
+      "vm_pu"
+    ]
+  },
+  "gold_answer": {
+    "bus_id": 12,
+    "vm_pu": 1.055519
+  },
+  "grader": {
+    "type": "json_numeric_tolerance",
+    "float_tol": 0.0001,
+    "required_fields": [
+      "bus_id",
+      "vm_pu"
+    ]
+  },
+  "scenario_digest": {
+    "num_buses": 14,
+    "num_generators": 5,
+    "num_branches": 20,
+    "num_active_branches": 20,
+    "mutation_ops": [
+      "scale_bus_load",
+      "scale_bus_load",
+      "set_tap_ratio"
+    ],
+    "bus_partition": {
+      "slack_bus_ids": [
+        1
+      ],
+      "pv_bus_ids": [
+        2,
+        3,
+        6,
+        8
+      ],
+      "pq_bus_ids": [
+        4,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    "total_pd_mw": 261.0206,
+    "total_qd_mvar": 71.96165,
+    "total_scheduled_pg_mw": 272.4
+  },
+  "provenance": {
+    "gold_source": "solver_truth",
+    "scenario_artifact": "demo_scenarios.jsonl",
+    "pipeline": "pfbench_phase1",
+    "dataset_version": "0.3.0"
+  },
+  "metadata": {
+    "solver_mode": "ac",
+    "target_bus_id": 12,
+    "tool_required": true
+  }
+}

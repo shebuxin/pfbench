@@ -1,0 +1,30 @@
+dataset:
+  dataset_id: pfbench_demo
+  dataset_version: "0.3.0"
+  generated_at: "1970-01-01T00:00:00Z"
+  seed: 42
+  cases:
+    - case14
+    - case30
+    - case39
+    - case57
+    - case118
+  num_scenarios_per_case: 5
+  split_ratios:
+    dev: 0.6
+    public_test: 0.2
+    private_test: 0.2
+  query_families:
+    - direct_bus_vm
+    - direct_bus_va
+    - argmin_bus_vm
+    - argmax_bus_va_abs
+    - direct_branch_p_from
+    - direct_branch_q_from
+    - max_branch_abs_p_from
+    - max_branch_abs_q_from
+    - compare_ac_dc_branch_p_from
+    - is_voltage_violation_present
+  export:
+    jsonl: true
+    parquet: false

@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "pfbench_scenario_record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset_id",
+    "scenario_id",
+    "source_case",
+    "split",
+    "grid_reference",
+    "base_grid_snapshot",
+    "scenario_spec",
+    "scenario_input_state",
+    "powerflow_results",
+    "provenance",
+    "metadata"
+  ],
+  "properties": {
+    "dataset_id": {"type": "string"},
+    "scenario_id": {"type": "string"},
+    "source_case": {"type": "string"},
+    "split": {"type": "string"},
+    "grid_reference": {
+      "type": "object",
+      "required": [
+        "case_name",
+        "source_library",
+        "base_mva",
+        "counts",
+        "data_digest",
+        "bus_partition_counts"
+      ],
+      "properties": {
+        "case_name": {"type": "string"},
+        "source_library": {"type": ["string", "null"]},
+        "source_url": {"type": ["string", "null"]},
+        "matpower_case_format_version": {"type": ["string", "null"]},
+        "base_mva": {"type": "number"},
+        "counts": {"type": "object"},
+        "bus_partition_counts": {"type": "object"},
+        "data_digest": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "base_grid_snapshot": {
+      "type": "object",
+      "required": ["bus_partition", "buses", "generators", "branches"],
+      "properties": {
+        "bus_partition": {"type": "object"},
+        "buses": {"type": "array"},
+        "generators": {"type": "array"},
+        "branches": {"type": "array"}
+      },
+      "additionalProperties": false
+    },
+    "scenario_spec": {
+      "type": "object",
+      "required": ["scenario_id", "seed", "source_case", "solver_modes", "mutations"],
+      "properties": {
+        "scenario_id": {"type": "string"},
+        "seed": {"type": "integer"},
+        "source_case": {"type": "string"},
+        "solver_modes": {"type": "array", "items": {"type": "string"}},
+        "mutations": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "scenario_input_state": {
+      "type": "object",
+      "required": [
+        "bus_partition",
+        "buses",
+        "generators",
+        "branches",
+        "bus_loads",
+        "generator_setpoints",
+        "branch_state",
+        "totals"
+      ],
+      "properties": {
+        "bus_partition": {
+          "type": "object",
+          "required": ["slack_bus_ids", "pv_bus_ids", "pq_bus_ids"]
+        },
+        "buses": {"type": "array"},
+        "generators": {"type": "array"},
+        "branches": {"type": "array"},
+        "bus_loads": {"type": "array"},
+        "generator_setpoints": {"type": "array"},
+        "branch_state": {"type": "array"},
+        "totals": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "powerflow_results": {
+      "type": "object",
+      "required": ["ac", "dc"],
+      "properties": {
+        "ac": {
+          "type": "object",
+          "required": ["solver_name", "bus_results", "generator_results", "branch_results", "system_summary"]
+        },
+        "dc": {
+          "type": "object",
+          "required": ["solver_name", "bus_results", "generator_results", "branch_results", "system_summary"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "dataset_version",
+        "generated_at",
+        "schema_versions",
+        "solver_config_digest",
+        "source_library"
+      ],
+      "properties": {
+        "dataset_version": {"type": "string"},
+        "generated_at": {"type": "string"},
+        "schema_versions": {"type": "object"},
+        "solver_config_digest": {"type": "string"},
+        "source_library": {"type": ["string", "null"]},
+        "source_reference": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "seed",
+        "scenario_text",
+        "mutation_ops",
+        "solver_name_ac",
+        "solver_name_dc",
+        "solver_config_digest",
+        "schema_versions",
+        "generated_at",
+        "dataset_version"
+      ],
+      "properties": {
+        "seed": {"type": "integer"},
+        "scenario_text": {"type": "string"},
+        "mutation_ops": {"type": "array", "items": {"type": "string"}},
+        "solver_name_ac": {"type": "string"},
+        "solver_name_dc": {"type": "string"},
+        "solver_config_digest": {"type": "string"},
+        "schema_versions": {"type": "object"},
+        "generated_at": {"type": "string"},
+        "dataset_version": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  }
+}

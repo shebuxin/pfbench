@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "pfbench_question_item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset_id",
+    "scenario_id",
+    "question_id",
+    "source_case",
+    "split",
+    "query_family",
+    "evaluation_mode",
+    "prompt",
+    "response_schema",
+    "gold_answer",
+    "grader",
+    "scenario_digest",
+    "provenance",
+    "metadata"
+  ],
+  "properties": {
+    "dataset_id": {"type": "string"},
+    "scenario_id": {"type": "string"},
+    "question_id": {"type": "string"},
+    "source_case": {"type": "string"},
+    "split": {"type": "string"},
+    "query_family": {
+      "type": "string",
+      "enum": [
+        "direct_bus_vm",
+        "direct_bus_va",
+        "argmin_bus_vm",
+        "argmax_bus_va_abs",
+        "direct_branch_p_from",
+        "direct_branch_q_from",
+        "max_branch_abs_p_from",
+        "max_branch_abs_q_from",
+        "compare_ac_dc_branch_p_from",
+        "is_voltage_violation_present"
+      ]
+    },
+    "evaluation_mode": {
+      "type": "string",
+      "enum": ["tool_or_structured_context_required"]
+    },
+    "prompt": {"type": "string"},
+    "response_schema": {"type": "object"},
+    "gold_answer": {"type": "object"},
+    "grader": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["json_numeric_tolerance", "json_exact", "ranking", "argmax", "argmin"]
+        },
+        "float_tol": {"type": "number"},
+        "required_fields": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "scenario_digest": {
+      "type": "object",
+      "required": [
+        "num_buses",
+        "num_generators",
+        "num_branches",
+        "num_active_branches",
+        "mutation_ops",
+        "bus_partition"
+      ],
+      "properties": {
+        "num_buses": {"type": "integer"},
+        "num_generators": {"type": "integer"},
+        "num_branches": {"type": "integer"},
+        "num_active_branches": {"type": "integer"},
+        "mutation_ops": {"type": "array", "items": {"type": "string"}},
+        "bus_partition": {"type": "object"},
+        "total_pd_mw": {"type": "number"},
+        "total_qd_mvar": {"type": "number"},
+        "total_scheduled_pg_mw": {"type": "number"}
+      },
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["gold_source", "scenario_artifact", "pipeline", "dataset_version"],
+      "properties": {
+        "gold_source": {"type": "string"},
+        "scenario_artifact": {"type": "string"},
+        "pipeline": {"type": "string"},
+        "dataset_version": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "metadata": {"type": "object"}
+  }
+}

@@ -16,5 +16,6 @@ dependencies:
   - typer
   - rich
   - jsonschema
+  - openai>=1.0
   - pip:
       - -e .

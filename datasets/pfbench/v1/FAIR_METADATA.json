@@ -90,13 +90,13 @@
     {
       "path": "FAIR_METADATA.json",
       "description": "Release-level metadata focused on findability, accessibility, interoperability, and reuse.",
-      "size_bytes": 6841,
+      "size_bytes": 6842,
       "format": "json"
     },
     {
       "path": "FIELD_DICTIONARY.md",
       "description": "Field-level descriptions for question and scenario artifacts.",
-      "size_bytes": 4155,
+      "size_bytes": 4453,
       "format": "md"
     },
     {
@@ -108,13 +108,13 @@
     {
       "path": "QUALITY_REPORT.md",
       "description": "Data quality, validation, and known-limitations summary.",
-      "size_bytes": 2537,
+      "size_bytes": 2784,
       "format": "md"
     },
     {
       "path": "README.md",
       "description": "Dataset card and access guide for the release package.",
-      "size_bytes": 5286,
+      "size_bytes": 5457,
       "format": "md"
     },
     {
@@ -180,13 +180,13 @@
     {
       "path": "questions.jsonl",
       "description": "Question item collection for benchmark evaluation.",
-      "size_bytes": 20272204,
+      "size_bytes": 20446993,
       "format": "jsonl"
     },
     {
       "path": "questions.parquet",
       "description": "Columnar export of the question item collection.",
-      "size_bytes": 713709,
+      "size_bytes": 723463,
       "format": "parquet"
     },
     {
@@ -198,25 +198,25 @@
     {
       "path": "reference_scenario_record.json",
       "description": "One frozen scenario record for quick inspection.",
-      "size_bytes": 68652,
+      "size_bytes": 74781,
       "format": "json"
     },
     {
       "path": "report.md",
       "description": "Human-readable summary report with coverage counts and metric ranges.",
-      "size_bytes": 1981,
+      "size_bytes": 2482,
       "format": "md"
     },
     {
       "path": "scenarios.jsonl",
       "description": "Full scenario records with mutated network state and AC/DC results.",
-      "size_bytes": 209155385,
+      "size_bytes": 226508285,
       "format": "jsonl"
     },
     {
       "path": "scenarios.parquet",
       "description": "Columnar export of the scenario record collection.",
-      "size_bytes": 13463434,
+      "size_bytes": 13486983,
       "format": "parquet"
     },
     {
@@ -228,7 +228,7 @@
     {
       "path": "schemas/scenario_record.schema.json",
       "description": "Frozen scenario schema for release consumers.",
-      "size_bytes": 4679,
+      "size_bytes": 11776,
       "format": "json"
     }
   ]

@@ -5,7 +5,10 @@ __pycache__/
 .env
 *.parquet
 
-# Large frozen release payloads are generated locally and uploaded externally,
-# not stored in the Git repository.
-/datasets/pfbench/*/*.jsonl
-/datasets/pfbench/*/*.parquet
+# Generated benchmark runs
+/runs/*
+!/runs/.gitkeep
+
+# Generated release payloads live in external data repositories, not in Git.
+/datasets/pfbench/*
+!/datasets/README.md

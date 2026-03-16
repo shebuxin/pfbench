@@ -7,7 +7,7 @@ from pathlib import Path
 import typer
 
 from pfbench import __version__
-from pfbench.evaluation import write_report
+from pfbench.evaluation import write_leaderboard, write_report
 from pfbench.generation import generate_dataset_bundle
 from pfbench.powerflow.cases import available_cases
 from pfbench.release import build_release_package
@@ -75,6 +75,21 @@ def report(
     summary, report_path = write_report(dataset_path=dataset, report_path=out)
     typer.echo(json.dumps(summary, ensure_ascii=False, indent=2))
     typer.echo(f"Report written to {report_path}")
+
+
+@app.command("leaderboard")
+def leaderboard(
+    predictions: Path = typer.Option(..., exists=True, readable=True, help="Prediction JSONL path."),
+    dataset: Path = typer.Option(Path("examples/demo_questions.jsonl"), exists=True, readable=True, help="Question dataset JSONL path."),
+    out: Path | None = typer.Option(None, help="Optional leaderboard JSON path."),
+) -> None:
+    summary, leaderboard_path = write_leaderboard(
+        dataset_path=dataset,
+        predictions_path=predictions,
+        out_path=out,
+    )
+    typer.echo(json.dumps(summary, ensure_ascii=False, indent=2))
+    typer.echo(f"Leaderboard written to {leaderboard_path}")
 
 
 @app.command("build-release")

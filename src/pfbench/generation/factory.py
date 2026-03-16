@@ -59,7 +59,7 @@ def generate_dataset_bundle(config_path: Path, out_path: Path) -> dict[str, Any]
     max_attempts = int(solver_cfg.get("retry", {}).get("max_attempts", 6))
     schema_versions = {
         "question_item": "0.3.0",
-        "scenario_record": "0.3.0",
+        "scenario_record": "0.5.0",
     }
 
     scenario_schema = _load_json_schema("scenario_record.schema.json")

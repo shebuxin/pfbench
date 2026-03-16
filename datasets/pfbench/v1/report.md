@@ -53,9 +53,11 @@
 
 - Total load P (MW): min=186.193040, max=291192.158000
 - Total scheduled generation P (MW): min=189.210000, max=343735.100000
-- Voltage magnitude (p.u.): min=-0.000000, max=1.218589
+- Voltage magnitude (p.u.): min=0.000000, max=1.218589
 - Absolute branch P_from (MW): min=0.000000, max=9841.729512
 - Absolute branch Q_from (MVAr): min=0.000000, max=3004.012358
+- Absolute AC power-balance residual (MW): min=0.000000, max=0.000021
+- Absolute DC power-balance residual (MW): min=0.000000, max=0.000000
 
 ## Scenario completeness
 
@@ -68,7 +70,15 @@
 - has_mutated_generator_snapshot: 1060/1060
 - has_scenario_input_state: 1060/1060
 
+## Data quality flags
+
+- scenarios_with_base_kv_missing: 220/1060
+- scenarios_with_missing_branch_ratings: 220/1060
+- scenarios_with_source_generator_q_limit_inconsistency: 440/1060
+- scenarios_with_source_voltage_limit_inconsistency: 500/1060
+
 ## Notes
 
 - Scenario records include base grid snapshot, scenario input state, and AC/DC power flow results.
+- Scenario records also carry explicit data-quality flags for inherited source-case artifacts and balance residuals.
 - Question items reference scenario_id and keep benchmark-specific fields compact.

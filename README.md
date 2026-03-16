@@ -87,9 +87,15 @@ Each scenario record includes:
   - generator setpoints
   - branch state
   - system totals
+- `data_quality_flags`
+  - missing base-kV metadata carried through from source cases
+  - inherited source-case voltage-limit inconsistencies
+  - inherited source-case generator reactive-limit inconsistencies
+  - missing branch-rating metadata
+  - AC/DC power-balance residuals
 - `powerflow_results.ac`
   - bus / generator / branch results
-  - system summary
+  - system summary with explicit shunt demand/injection terms for balance semantics
 - `powerflow_results.dc`
   - bus / generator / branch results
   - system summary
@@ -233,5 +239,8 @@ Core code layout:
 - Scenario generation is deterministic with respect to the configured seed.
 - Extended cases rely on `pandapower` being installed in the active environment.
 - The current solver assumes a single slack bus and does not enforce generator reactive power limits.
+- Scenario records preserve source-case fidelity and expose inherited metadata issues through `data_quality_flags` instead of silently normalizing them away.
+- `grid_reference.source_url` is pinned to an upstream tag or installed package version when a stable reference is available.
+- `is_voltage_violation_present` excludes buses already flagged as inherited source-case voltage-limit inconsistencies so the label reflects scenario-specific violations.
 - The frozen release package is the primary archival artifact for a data-paper submission; the codebase is the supporting generation method.
 - Later phases can add OpenAI runner and agent benchmark functionality without changing the Phase 1 truth pipeline.

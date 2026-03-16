@@ -21,6 +21,36 @@ class PowerFlowError(RuntimeError):
     """Raised when a scenario cannot be solved."""
 
 
+def _is_effectively_zero(value: float, tol: float = 1e-9) -> bool:
+    return abs(float(value)) <= tol
+
+
+def _normalize_missing_numeric(value: float) -> tuple[float, float | None, bool]:
+    raw = _clean_float(float(value))
+    missing = _is_effectively_zero(raw)
+    return raw, None if missing else raw, missing
+
+
+def _clean_float(value: float) -> float:
+    numeric = float(value)
+    return 0.0 if numeric == 0.0 else numeric
+
+
+def _round_output(value: float, digits: int = 6) -> float:
+    return _clean_float(round(float(value), digits))
+
+
+def _violates_limits(value: float, lower: float, upper: float, tol: float = 1e-6) -> bool:
+    numeric = float(value)
+    return numeric < float(lower) - tol or numeric > float(upper) + tol
+
+
+def _q_limit_violated(q_value: float | None, qmin: float, qmax: float) -> bool | None:
+    if q_value is None:
+        return None
+    return _violates_limits(float(q_value), float(qmin), float(qmax))
+
+
 def _bus_index(case: dict[str, Any]) -> dict[int, int]:
     return {int(row[0]): idx for idx, row in enumerate(case["bus"])}
 
@@ -222,13 +252,14 @@ def _dc_power_flow(case: dict[str, Any]) -> dict[str, Any]:
         tap = float(ratio) if float(ratio) != 0.0 else 1.0
         shift = math.radians(float(angle))
         bij = 1.0 / float(x)
-        bbus[i, i] += bij / (tap ** 2)
-        bbus[j, j] += bij
-        bbus[i, j] += -bij / tap
-        bbus[j, i] += -bij / tap
+        bseries = bij / tap
+        bbus[i, i] += bseries
+        bbus[j, j] += bseries
+        bbus[i, j] += -bseries
+        bbus[j, i] += -bseries
         if abs(shift) > 0:
-            pbusinj[i] += -shift * bij / tap
-            pbusinj[j] += shift * bij / tap
+            pbusinj[i] += -shift * bseries
+            pbusinj[j] += shift * bseries
 
     mask = [i for i in range(nb) if i != ref_idx]
     reduced = bbus[np.ix_(mask, mask)]
@@ -260,22 +291,25 @@ def _snapshot_buses(case: dict[str, Any]) -> list[dict[str, Any]]:
     buses = []
     bus_names = list(case.get("bus_name", []))
     for pos, row in enumerate(case["bus"]):
+        base_kv_raw, base_kv, base_kv_is_missing = _normalize_missing_numeric(row[9])
         buses.append({
             "bus_id": int(row[0]),
             "bus_name": bus_names[pos] if pos < len(bus_names) else None,
             "type_code": int(row[1]),
             "type_label": BUS_TYPE_LABEL.get(int(row[1]), "Unknown"),
-            "pd_mw": float(row[2]),
-            "qd_mvar": float(row[3]),
-            "gs_mw": float(row[4]),
-            "bs_mvar": float(row[5]),
+            "pd_mw": _clean_float(float(row[2])),
+            "qd_mvar": _clean_float(float(row[3])),
+            "gs_mw": _clean_float(float(row[4])),
+            "bs_mvar": _clean_float(float(row[5])),
             "area": int(row[6]),
-            "vm_init_pu": float(row[7]),
-            "va_init_deg": float(row[8]),
-            "base_kv": float(row[9]),
+            "vm_input_pu": _clean_float(float(row[7])),
+            "va_input_deg": _clean_float(float(row[8])),
+            "base_kv": base_kv,
+            "base_kv_raw": base_kv_raw,
+            "base_kv_is_missing": base_kv_is_missing,
             "zone": int(row[10]),
-            "vmax_pu": float(row[11]),
-            "vmin_pu": float(row[12]),
+            "vmax_pu": _clean_float(float(row[11])),
+            "vmin_pu": _clean_float(float(row[12])),
         })
     return buses
 
@@ -287,20 +321,24 @@ def _snapshot_generators(case: dict[str, Any]) -> list[dict[str, Any]]:
     rows = []
     for gen_id, row in enumerate(case["gen"], start=1):
         bus_id = int(row[0])
+        qg_mvar = float(row[2])
+        qmax_mvar = float(row[3])
+        qmin_mvar = float(row[4])
         rows.append({
             "gen_id": gen_id,
             "bus_id": bus_id,
-            "pg_mw": float(row[1]),
-            "qg_mvar": float(row[2]),
-            "qmax_mvar": float(row[3]),
-            "qmin_mvar": float(row[4]),
-            "vg_pu": float(row[5]),
-            "m_base_mva": float(row[6]),
+            "pg_mw": _clean_float(float(row[1])),
+            "qg_mvar": qg_mvar,
+            "qmax_mvar": qmax_mvar,
+            "qmin_mvar": qmin_mvar,
+            "vg_pu": _clean_float(float(row[5])),
+            "m_base_mva": _clean_float(float(row[6])),
             "status": int(row[7]),
-            "pmax_mw": float(row[8]),
-            "pmin_mw": float(row[9]),
+            "pmax_mw": _clean_float(float(row[8])),
+            "pmin_mw": _clean_float(float(row[9])),
             "is_slack_bus": bus_id in slack_set,
             "is_pv_bus": bus_id in pv_set,
+            "q_limit_violated": _q_limit_violated(qg_mvar, qmin_mvar, qmax_mvar),
         })
     return rows
 
@@ -312,17 +350,17 @@ def _snapshot_branches(case: dict[str, Any]) -> list[dict[str, Any]]:
             "branch_id": branch_id,
             "from_bus": int(row[0]),
             "to_bus": int(row[1]),
-            "r_pu": float(row[2]),
-            "x_pu": float(row[3]),
-            "b_pu": float(row[4]),
-            "rate_a_mva": float(row[5]),
-            "rate_b_mva": float(row[6]),
-            "rate_c_mva": float(row[7]),
-            "tap_ratio": float(row[8]) if float(row[8]) != 0.0 else 1.0,
-            "shift_deg": float(row[9]),
+            "r_pu": _clean_float(float(row[2])),
+            "x_pu": _clean_float(float(row[3])),
+            "b_pu": _clean_float(float(row[4])),
+            "rate_a_mva": _clean_float(float(row[5])),
+            "rate_b_mva": _clean_float(float(row[6])),
+            "rate_c_mva": _clean_float(float(row[7])),
+            "tap_ratio": _clean_float(float(row[8]) if float(row[8]) != 0.0 else 1.0),
+            "shift_deg": _clean_float(float(row[9])),
             "status": int(row[10]),
-            "angmin_deg": float(row[11]),
-            "angmax_deg": float(row[12]),
+            "angmin_deg": _clean_float(float(row[11])),
+            "angmax_deg": _clean_float(float(row[12])),
             "element_type": _element_type(row),
         })
     return rows
@@ -371,22 +409,30 @@ def _generator_results(case: dict[str, Any], p_inj_pu: np.ndarray, q_inj_pu: np.
 
         for offset, (gen_id, gen) in enumerate(gens):
             q_value = q_values[offset] if q_inj_pu is not None else None
+            qmax_mvar = float(gen[3])
+            qmin_mvar = float(gen[4])
             results.append({
                 "gen_id": gen_id,
                 "bus_id": bus_id,
-                "pg_mw": round(float(p_values[offset]), 6),
-                "qg_mvar": None if q_value is None else round(float(q_value), 6),
-                "qmax_mvar": float(gen[3]),
-                "qmin_mvar": float(gen[4]),
+                "pg_mw": _round_output(float(p_values[offset])),
+                "qg_mvar": None if q_value is None else _round_output(float(q_value)),
+                "qmax_mvar": qmax_mvar,
+                "qmin_mvar": qmin_mvar,
                 "vg_pu": float(gen[5]),
                 "status": int(gen[7]),
                 "pmax_mw": float(gen[8]),
                 "pmin_mw": float(gen[9]),
+                "q_limit_violated": _q_limit_violated(q_value, qmin_mvar, qmax_mvar),
             })
     return results
 
 
-def _bus_results(case: dict[str, Any], ac_or_dc: dict[str, Any], gen_results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _bus_results(
+    case: dict[str, Any],
+    ac_or_dc: dict[str, Any],
+    gen_results: list[dict[str, Any]],
+    include_shunts: bool,
+) -> list[dict[str, Any]]:
     bus = np.array(case["bus"], dtype=float)
     p_inj = ac_or_dc["p_inj_pu"] * float(case["baseMVA"])
     q_inj = None if ac_or_dc["q_inj_pu"] is None else ac_or_dc["q_inj_pu"] * float(case["baseMVA"])
@@ -400,18 +446,23 @@ def _bus_results(case: dict[str, Any], ac_or_dc: dict[str, Any], gen_results: li
         gens = gen_by_bus.get(bus_id, [])
         pg_total = sum(float(item["pg_mw"]) for item in gens)
         qg_total = None if q_inj is None else sum(float(item["qg_mvar"] or 0.0) for item in gens)
+        vm_pu = float(ac_or_dc["vm"][pos])
+        shunt_p_demand = float(raw[4]) * vm_pu ** 2 if include_shunts else 0.0
+        shunt_q_injection = float(raw[5]) * vm_pu ** 2 if include_shunts and q_inj is not None else None
         rows.append({
             "bus_id": bus_id,
             "type_code": int(raw[1]),
             "type_label": BUS_TYPE_LABEL.get(int(raw[1]), "Unknown"),
-            "vm_pu": round(float(ac_or_dc["vm"][pos]), 6),
-            "va_deg": round(float(np.rad2deg(ac_or_dc["va"][pos])), 6),
+            "vm_pu": _round_output(vm_pu),
+            "va_deg": _round_output(float(np.rad2deg(ac_or_dc["va"][pos]))),
             "pd_mw": float(raw[2]),
             "qd_mvar": float(raw[3]),
-            "pg_mw": round(float(pg_total), 6),
-            "qg_mvar": None if qg_total is None else round(float(qg_total), 6),
-            "p_net_injection_mw": round(float(p_inj[pos]), 6),
-            "q_net_injection_mvar": None if q_inj is None else round(float(q_inj[pos]), 6),
+            "pg_mw": _round_output(float(pg_total)),
+            "qg_mvar": None if qg_total is None else _round_output(float(qg_total)),
+            "p_net_injection_mw": _round_output(float(p_inj[pos])),
+            "q_net_injection_mvar": None if q_inj is None else _round_output(float(q_inj[pos])),
+            "shunt_p_demand_mw": _round_output(shunt_p_demand),
+            "shunt_q_injection_mvar": None if shunt_q_injection is None else _round_output(shunt_q_injection),
         })
     return rows
 
@@ -454,14 +505,14 @@ def _branch_results_ac(case: dict[str, Any], ac_solution: dict[str, Any]) -> lis
             "status": 1,
             "element_type": _element_type(raw),
             "tap_ratio": float(raw[8]) if float(raw[8]) != 0.0 else 1.0,
-            "p_from_mw": round(float(s_from.real), 6),
-            "q_from_mvar": round(float(s_from.imag), 6),
-            "p_to_mw": round(float(s_to.real), 6),
-            "q_to_mvar": round(float(s_to.imag), 6),
-            "p_loss_mw": round(float((s_from + s_to).real), 6),
-            "q_loss_mvar": round(float((s_from + s_to).imag), 6),
-            "s_from_mva": round(float(abs(s_from)), 6),
-            "s_to_mva": round(float(abs(s_to)), 6),
+            "p_from_mw": _round_output(float(s_from.real)),
+            "q_from_mvar": _round_output(float(s_from.imag)),
+            "p_to_mw": _round_output(float(s_to.real)),
+            "q_to_mvar": _round_output(float(s_to.imag)),
+            "p_loss_mw": _round_output(float((s_from + s_to).real)),
+            "q_loss_mvar": _round_output(float((s_from + s_to).imag)),
+            "s_from_mva": _round_output(float(abs(s_from))),
+            "s_to_mva": _round_output(float(abs(s_to))),
         })
     return rows
 
@@ -497,20 +548,43 @@ def _branch_results_dc(case: dict[str, Any], dc_solution: dict[str, Any]) -> lis
             "status": 1,
             "element_type": _element_type(raw),
             "tap_ratio": tap,
-            "p_from_mw": round(float(p_from), 6),
-            "p_to_mw": round(float(-p_from), 6),
+            "p_from_mw": _round_output(float(p_from)),
+            "p_to_mw": _round_output(float(-p_from)),
             "p_loss_mw": 0.0,
         })
     return rows
 
 
-def _system_summary(case: dict[str, Any], bus_results: list[dict[str, Any]], gen_results: list[dict[str, Any]], branch_results: list[dict[str, Any]], include_q: bool) -> dict[str, Any]:
-    total_pd = round(sum(float(row[2]) for row in case["bus"]), 6)
-    total_qd = round(sum(float(row[3]) for row in case["bus"]), 6)
-    total_pg = round(sum(float(row["pg_mw"]) for row in gen_results), 6)
-    total_qg = None if not include_q else round(sum(float(row["qg_mvar"] or 0.0) for row in gen_results), 6)
-    total_p_loss = round(sum(float(row["p_loss_mw"]) for row in branch_results), 6)
-    total_q_loss = None if not include_q else round(sum(float(row["q_loss_mvar"]) for row in branch_results), 6)
+def _system_summary(
+    case: dict[str, Any],
+    bus_results: list[dict[str, Any]],
+    gen_results: list[dict[str, Any]],
+    branch_results: list[dict[str, Any]],
+    include_q: bool,
+    include_shunts: bool,
+) -> dict[str, Any]:
+    total_pd = _round_output(sum(float(row[2]) for row in case["bus"]))
+    total_qd = _round_output(sum(float(row[3]) for row in case["bus"]))
+    total_pg = _round_output(sum(float(row["pg_mw"]) for row in gen_results))
+    total_qg = None if not include_q else _round_output(sum(float(row["qg_mvar"] or 0.0) for row in gen_results))
+    total_p_loss = _round_output(sum(float(row["p_loss_mw"]) for row in branch_results))
+    total_q_loss = None if not include_q else _round_output(sum(float(row["q_loss_mvar"]) for row in branch_results))
+    total_shunt_p_demand = _round_output(
+        sum(float(row.get("shunt_p_demand_mw", 0.0)) for row in bus_results)
+    ) if include_shunts else 0.0
+    total_shunt_q_injection = None
+    if include_q and include_shunts:
+        total_shunt_q_injection = _round_output(
+            sum(float(row.get("shunt_q_injection_mvar") or 0.0) for row in bus_results)
+        )
+    net_bus_injection_p = _round_output(sum(float(row["p_net_injection_mw"]) for row in bus_results))
+    net_bus_injection_q = None if not include_q else _round_output(sum(float(row["q_net_injection_mvar"] or 0.0) for row in bus_results))
+    power_balance_residual_p = _round_output(total_pg - total_pd - total_shunt_p_demand - total_p_loss)
+    power_balance_residual_q = None
+    if include_q:
+        power_balance_residual_q = _round_output(
+            float(total_qg or 0.0) + float(total_shunt_q_injection or 0.0) - total_qd - float(total_q_loss or 0.0)
+        )
     min_bus = min(bus_results, key=lambda row: row["vm_pu"])
     max_bus = max(bus_results, key=lambda row: row["vm_pu"])
     return {
@@ -518,8 +592,14 @@ def _system_summary(case: dict[str, Any], bus_results: list[dict[str, Any]], gen
         "total_load_q_mvar": total_qd,
         "total_gen_p_mw": total_pg,
         "total_gen_q_mvar": total_qg,
+        "total_shunt_p_demand_mw": total_shunt_p_demand,
+        "total_shunt_q_injection_mvar": total_shunt_q_injection,
         "total_loss_p_mw": total_p_loss,
         "total_loss_q_mvar": total_q_loss,
+        "net_bus_injection_p_mw": net_bus_injection_p,
+        "net_bus_injection_q_mvar": net_bus_injection_q,
+        "power_balance_residual_p_mw": power_balance_residual_p,
+        "power_balance_residual_q_mvar": power_balance_residual_q,
         "min_vm_bus_id": int(min_bus["bus_id"]),
         "min_vm_pu": float(min_bus["vm_pu"]),
         "max_vm_bus_id": int(max_bus["bus_id"]),
@@ -563,22 +643,26 @@ def _scenario_input_state(mutated_case: dict[str, Any]) -> dict[str, Any]:
     for row in mutated_case["bus"]:
         bus_loads.append({
             "bus_id": int(row[0]),
-            "pd_mw": float(row[2]),
-            "qd_mvar": float(row[3]),
+            "pd_mw": _clean_float(float(row[2])),
+            "qd_mvar": _clean_float(float(row[3])),
         })
     generator_setpoints = []
     for gen_id, row in enumerate(mutated_case["gen"], start=1):
+        qg_mvar = float(row[2])
+        qmax_mvar = float(row[3])
+        qmin_mvar = float(row[4])
         generator_setpoints.append({
             "gen_id": gen_id,
             "bus_id": int(row[0]),
-            "pg_mw": float(row[1]),
-            "qg_mvar_initial": float(row[2]),
-            "qmax_mvar": float(row[3]),
-            "qmin_mvar": float(row[4]),
-            "vg_pu": float(row[5]),
+            "pg_mw": _clean_float(float(row[1])),
+            "qg_mvar_initial": qg_mvar,
+            "qmax_mvar": qmax_mvar,
+            "qmin_mvar": qmin_mvar,
+            "vg_pu": _clean_float(float(row[5])),
             "status": int(row[7]),
-            "pmax_mw": float(row[8]),
-            "pmin_mw": float(row[9]),
+            "pmax_mw": _clean_float(float(row[8])),
+            "pmin_mw": _clean_float(float(row[9])),
+            "q_limit_violated": _q_limit_violated(qg_mvar, qmin_mvar, qmax_mvar),
         })
     branch_state = []
     for branch_id, row in enumerate(mutated_case["branch"], start=1):
@@ -587,8 +671,8 @@ def _scenario_input_state(mutated_case: dict[str, Any]) -> dict[str, Any]:
             "from_bus": int(row[0]),
             "to_bus": int(row[1]),
             "status": int(row[10]),
-            "tap_ratio": float(row[8]) if float(row[8]) != 0.0 else 1.0,
-            "shift_deg": float(row[9]),
+            "tap_ratio": _clean_float(float(row[8]) if float(row[8]) != 0.0 else 1.0),
+            "shift_deg": _clean_float(float(row[9])),
             "element_type": _element_type(row),
         })
     return {
@@ -600,12 +684,47 @@ def _scenario_input_state(mutated_case: dict[str, Any]) -> dict[str, Any]:
         "generator_setpoints": generator_setpoints,
         "branch_state": branch_state,
         "totals": {
-            "total_pd_mw": round(sum(float(row[2]) for row in mutated_case["bus"]), 6),
-            "total_qd_mvar": round(sum(float(row[3]) for row in mutated_case["bus"]), 6),
-            "total_scheduled_pg_mw": round(sum(float(row[1]) for row in mutated_case["gen"] if int(row[7]) == 1), 6),
+            "total_pd_mw": _round_output(sum(float(row[2]) for row in mutated_case["bus"])),
+            "total_qd_mvar": _round_output(sum(float(row[3]) for row in mutated_case["bus"])),
+            "total_scheduled_pg_mw": _round_output(sum(float(row[1]) for row in mutated_case["gen"] if int(row[7]) == 1)),
             "num_active_generators": sum(1 for row in mutated_case["gen"] if int(row[7]) == 1),
             "num_active_branches": sum(1 for row in mutated_case["branch"] if int(row[10]) == 1),
         },
+    }
+
+
+def _scenario_data_quality_flags(
+    base_case: dict[str, Any],
+    ac_summary: dict[str, Any],
+    dc_summary: dict[str, Any],
+) -> dict[str, Any]:
+    base_kv_missing_bus_ids = [
+        int(row[0])
+        for row in base_case["bus"]
+        if _normalize_missing_numeric(row[9])[2]
+    ]
+    source_voltage_limit_inconsistency_bus_ids = [
+        int(row[0])
+        for row in base_case["bus"]
+        if _violates_limits(float(row[7]), float(row[12]), float(row[11]))
+    ]
+    source_generator_q_limit_inconsistency_gen_ids = [
+        gen_id
+        for gen_id, row in enumerate(base_case["gen"], start=1)
+        if _q_limit_violated(float(row[2]), float(row[4]), float(row[3]))
+    ]
+    missing_branch_rating_branch_ids = [
+        branch_id
+        for branch_id, row in enumerate(base_case["branch"], start=1)
+        if _normalize_missing_numeric(row[5])[2]
+    ]
+    return {
+        "base_kv_missing_bus_ids": base_kv_missing_bus_ids,
+        "source_voltage_limit_inconsistency_bus_ids": source_voltage_limit_inconsistency_bus_ids,
+        "source_generator_q_limit_inconsistency_gen_ids": source_generator_q_limit_inconsistency_gen_ids,
+        "missing_branch_rating_branch_ids": missing_branch_rating_branch_ids,
+        "ac_power_balance_residual_mw": _clean_float(ac_summary["power_balance_residual_p_mw"]),
+        "dc_power_balance_residual_mw": _clean_float(dc_summary["power_balance_residual_p_mw"]),
     }
 
 
@@ -624,8 +743,8 @@ def solve_scenario(
     ac_cfg = solver_config.get("ac", {})
     solver_config_digest = stable_hex(solver_config, length=16)
     schema_versions = schema_versions or {
-        "question_item": "0.2.0",
-        "scenario_record": "0.2.0",
+        "question_item": "0.3.0",
+        "scenario_record": "0.5.0",
     }
     ac_solution = _ac_power_flow(
         mutated_case,
@@ -637,11 +756,14 @@ def solve_scenario(
     ac_gen = _generator_results(mutated_case, ac_solution["p_inj_pu"], ac_solution["q_inj_pu"])
     dc_gen = _generator_results(mutated_case, dc_solution["p_inj_pu"], None)
 
-    ac_bus = _bus_results(mutated_case, ac_solution, ac_gen)
-    dc_bus = _bus_results(mutated_case, dc_solution, dc_gen)
+    ac_bus = _bus_results(mutated_case, ac_solution, ac_gen, include_shunts=True)
+    dc_bus = _bus_results(mutated_case, dc_solution, dc_gen, include_shunts=False)
 
     ac_branch = _branch_results_ac(mutated_case, ac_solution)
     dc_branch = _branch_results_dc(mutated_case, dc_solution)
+    ac_summary = _system_summary(mutated_case, ac_bus, ac_gen, ac_branch, include_q=True, include_shunts=True)
+    dc_summary = _system_summary(mutated_case, dc_bus, dc_gen, dc_branch, include_q=False, include_shunts=False)
+    data_quality_flags = _scenario_data_quality_flags(base_case, ac_summary, dc_summary)
 
     record = {
         "dataset_id": dataset_id,
@@ -652,6 +774,7 @@ def solve_scenario(
         "base_grid_snapshot": _base_snapshot(base_case),
         "scenario_spec": scenario_spec,
         "scenario_input_state": _scenario_input_state(mutated_case),
+        "data_quality_flags": data_quality_flags,
         "powerflow_results": {
             "ac": {
                 "converged": True,
@@ -663,7 +786,7 @@ def solve_scenario(
                     "tolerance": float(ac_cfg.get("tolerance", 1e-8)),
                 },
                 "reference_bus_ids": bus_partition(mutated_case)["slack_bus_ids"],
-                "system_summary": _system_summary(mutated_case, ac_bus, ac_gen, ac_branch, include_q=True),
+                "system_summary": ac_summary,
                 "bus_results": ac_bus,
                 "generator_results": ac_gen,
                 "branch_results": ac_branch,
@@ -678,7 +801,7 @@ def solve_scenario(
                     "branch_resistance_ignored": True,
                 },
                 "reference_bus_ids": bus_partition(mutated_case)["slack_bus_ids"],
-                "system_summary": _system_summary(mutated_case, dc_bus, dc_gen, dc_branch, include_q=False),
+                "system_summary": dc_summary,
                 "bus_results": dc_bus,
                 "generator_results": dc_gen,
                 "branch_results": dc_branch,

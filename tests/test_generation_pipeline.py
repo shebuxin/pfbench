@@ -59,6 +59,7 @@ def test_generate_bundle_small(tmp_path: Path) -> None:
     assert "base_grid_snapshot" in scenario
     assert "scenario_input_state" in scenario
     assert "powerflow_results" in scenario
+    assert "data_quality_flags" in scenario
     assert "provenance" in scenario
     assert "slack_bus_ids" in scenario["scenario_input_state"]["bus_partition"]
     assert scenario["scenario_input_state"]["buses"]
@@ -72,6 +73,10 @@ def test_generate_bundle_small(tmp_path: Path) -> None:
     assert len(questions) == 10
     assert all(question["evaluation_mode"] == "tool_or_structured_context_required" for question in questions)
     assert all(question["provenance"]["scenario_artifact"] == "demo_scenarios.jsonl" for question in questions)
+    violation_item = next(question for question in questions if question["query_family"] == "is_voltage_violation_present")
+    excluded_bus_ids = set(violation_item["metadata"]["excluded_source_inconsistency_bus_ids"])
+    assert excluded_bus_ids == set(scenario["data_quality_flags"]["source_voltage_limit_inconsistency_bus_ids"])
+    assert excluded_bus_ids.isdisjoint(set(violation_item["gold_answer"]["violating_bus_ids"]))
 
 
 def test_grade_answer_pass_and_fail(tmp_path: Path) -> None:

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from copy import deepcopy
 
+_MATPOWER_TAG = "8.1"
+
 CASE14 = {
     "case_name": "case14",
     "source_library": "matpower",
-    "source_url": "https://raw.githubusercontent.com/MATPOWER/matpower/master/data/case14.m",
+    "source_url": f"https://raw.githubusercontent.com/MATPOWER/matpower/{_MATPOWER_TAG}/data/case14.m",
     "matpower_case_format_version": "2",
     "baseMVA": 100.0,
     "bus": [
@@ -63,7 +65,7 @@ CASE14 = {
 CASE30 = {
     "case_name": "case30",
     "source_library": "matpower",
-    "source_url": "https://raw.githubusercontent.com/MATPOWER/matpower/master/data/case30.m",
+    "source_url": f"https://raw.githubusercontent.com/MATPOWER/matpower/{_MATPOWER_TAG}/data/case30.m",
     "matpower_case_format_version": "2",
     "baseMVA": 100.0,
     "bus": [

@@ -79,6 +79,14 @@ def write_report(dataset_path: Path, report_path: Path | None = None) -> tuple[d
         for branch in row.get("powerflow_results", {}).get("ac", {}).get("branch_results", [])
         if int(branch["status"]) == 1 and "q_from_mvar" in branch
     ]
+    ac_balance_residual_values = [
+        abs(float(row.get("data_quality_flags", {}).get("ac_power_balance_residual_mw", 0.0)))
+        for row in scenarios
+    ]
+    dc_balance_residual_values = [
+        abs(float(row.get("data_quality_flags", {}).get("dc_power_balance_residual_mw", 0.0)))
+        for row in scenarios
+    ]
 
     scenario_checks = {
         "has_base_grid_snapshot": sum(1 for row in scenarios if "base_grid_snapshot" in row),
@@ -91,6 +99,24 @@ def write_report(dataset_path: Path, report_path: Path | None = None) -> tuple[d
         "has_bus_partition": sum(
             1 for row in scenarios
             if row.get("scenario_input_state", {}).get("bus_partition")
+        ),
+    }
+    data_quality_counts = {
+        "scenarios_with_base_kv_missing": sum(
+            1 for row in scenarios
+            if row.get("data_quality_flags", {}).get("base_kv_missing_bus_ids")
+        ),
+        "scenarios_with_source_voltage_limit_inconsistency": sum(
+            1 for row in scenarios
+            if row.get("data_quality_flags", {}).get("source_voltage_limit_inconsistency_bus_ids")
+        ),
+        "scenarios_with_source_generator_q_limit_inconsistency": sum(
+            1 for row in scenarios
+            if row.get("data_quality_flags", {}).get("source_generator_q_limit_inconsistency_gen_ids")
+        ),
+        "scenarios_with_missing_branch_ratings": sum(
+            1 for row in scenarios
+            if row.get("data_quality_flags", {}).get("missing_branch_rating_branch_ids")
         ),
     }
 
@@ -110,7 +136,10 @@ def write_report(dataset_path: Path, report_path: Path | None = None) -> tuple[d
         "voltage_magnitude_pu_range": _range(voltage_values),
         "branch_abs_p_from_mw_range": _range(branch_p_values),
         "branch_abs_q_from_mvar_range": _range(branch_q_values),
+        "ac_power_balance_residual_mw_range": _range(ac_balance_residual_values),
+        "dc_power_balance_residual_mw_range": _range(dc_balance_residual_values),
         "scenario_completeness": scenario_checks,
+        "data_quality_counts": data_quality_counts,
     }
 
     if report_path is None:
@@ -152,6 +181,8 @@ def write_report(dataset_path: Path, report_path: Path | None = None) -> tuple[d
         ("Voltage magnitude (p.u.)", summary["voltage_magnitude_pu_range"]),
         ("Absolute branch P_from (MW)", summary["branch_abs_p_from_mw_range"]),
         ("Absolute branch Q_from (MVAr)", summary["branch_abs_q_from_mvar_range"]),
+        ("Absolute AC power-balance residual (MW)", summary["ac_power_balance_residual_mw_range"]),
+        ("Absolute DC power-balance residual (MW)", summary["dc_power_balance_residual_mw_range"]),
     ]:
         if value is None:
             lines.append(f"- {label}: n/a")
@@ -161,8 +192,12 @@ def write_report(dataset_path: Path, report_path: Path | None = None) -> tuple[d
         lines += ["", "## Scenario completeness", ""]
         for key, value in sorted(scenario_checks.items()):
             lines.append(f"- {key}: {value}/{len(scenarios)}")
+        lines += ["", "## Data quality flags", ""]
+        for key, value in sorted(data_quality_counts.items()):
+            lines.append(f"- {key}: {value}/{len(scenarios)}")
         lines += ["", "## Notes", ""]
         lines.append("- Scenario records include base grid snapshot, scenario input state, and AC/DC power flow results.")
+        lines.append("- Scenario records also carry explicit data-quality flags for inherited source-case artifacts and balance residuals.")
         lines.append("- Question items reference scenario_id and keep benchmark-specific fields compact.")
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return summary, report_path

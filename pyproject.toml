@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pfbench"
-version = "0.3.0"
+version = "0.5.0"
 description = "Self-contained power-flow benchmark dataset factory"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -17,6 +17,7 @@ dependencies = [
   "typer",
   "rich",
   "jsonschema",
+  "openai>=1.0",
 ]
 
 [project.scripts]

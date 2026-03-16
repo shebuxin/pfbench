@@ -62,14 +62,22 @@ def _pick_branch(record: dict[str, Any], family: str) -> dict[str, Any]:
     return sorted(branches, key=lambda row: row["branch_id"])[rng.randrange(len(branches))]
 
 
+def _source_voltage_limit_exclusions(record: dict[str, Any]) -> set[int]:
+    flags = record.get("data_quality_flags", {})
+    return {int(bus_id) for bus_id in flags.get("source_voltage_limit_inconsistency_bus_ids", [])}
+
+
 def _voltage_violations(record: dict[str, Any]) -> list[int]:
     bus_limits = {
         int(row["bus_id"]): (float(row["vmin_pu"]), float(row["vmax_pu"]))
         for row in record["scenario_input_state"]["buses"]
     }
+    excluded_bus_ids = _source_voltage_limit_exclusions(record)
     violating: list[int] = []
     for row in record["powerflow_results"]["ac"]["bus_results"]:
         bus_id = int(row["bus_id"])
+        if bus_id in excluded_bus_ids:
+            continue
         vmin, vmax = bus_limits[bus_id]
         vm = float(row["vm_pu"])
         if vm < vmin or vm > vmax:
@@ -313,9 +321,11 @@ def build_question_item(
 
     elif query_family == "is_voltage_violation_present":
         violating_bus_ids = _voltage_violations(scenario_record)
+        excluded_bus_ids = sorted(_source_voltage_limit_exclusions(scenario_record))
         prompt = (
             f"Scenario ID: {scenario_id}. {scenario_text} "
-            "Using the scenario record, determine whether any AC bus voltage magnitude violates its limits. "
+            "Using the scenario record, determine whether any AC bus voltage magnitude violates its limits "
+            "after excluding any buses already flagged as source-case voltage-limit inconsistencies. "
             "Return JSON."
         )
         response_schema = _response_schema(
@@ -335,7 +345,12 @@ def build_question_item(
             "type": "json_exact",
             "required_fields": ["voltage_violation_present", "num_violations", "violating_bus_ids"],
         }
-        metadata = {"solver_mode": "ac", "criterion": "voltage_limit_check", "tool_required": True}
+        metadata = {
+            "solver_mode": "ac",
+            "criterion": "voltage_limit_check_excluding_source_inconsistencies",
+            "excluded_source_inconsistency_bus_ids": excluded_bus_ids,
+            "tool_required": True,
+        }
 
     else:
         raise ValueError(f"Unsupported query family: {query_family}")

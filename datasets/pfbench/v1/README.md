@@ -2,14 +2,6 @@
 
 This directory is the frozen dataset release package for the Phase 1 `pfbench` benchmark collection. It is intended to be uploaded unchanged to a third-party data repository.
 
-## Repository note
-
-The source-code repository intentionally does not track the large generated `questions.jsonl`, `scenarios.jsonl`, and Parquet payloads in this directory because GitHub rejects very large benchmark blobs.
-
-- The compact metadata and documentation in this directory remain tracked in Git.
-- The full archival payload should be regenerated locally with `pfbench build-release --config configs/release_v1.yaml --out datasets/pfbench/v1`.
-- After regeneration, upload the complete directory to the external data repository and cite that deposited package in the manuscript.
-
 ## Release summary
 
 - Dataset ID: `pfbench`
@@ -97,5 +89,6 @@ The source-code repository intentionally does not track the large generated `que
 
 - Gold answers come only from the in-repo solvers and stored scenario records.
 - The AC solver assumes exactly one slack bus and does not enforce generator reactive power limits.
+- Scenario records preserve source-case fidelity and explicitly flag inherited metadata inconsistencies such as missing nominal voltages or pre-existing limit violations.
 - Failed scenarios are preserved instead of silently dropped, but the current default release recorded zero failed scenarios.
 - The code repository is a supporting generation artifact; the dataset collection in this directory is the primary archival object for a data-paper submission.

@@ -52,6 +52,8 @@
 - Voltage magnitude (p.u.): min=0.677408, max=1.090000
 - Absolute branch P_from (MW): min=0.000000, max=824.766969
 - Absolute branch Q_from (MVAr): min=0.000000, max=213.062819
+- Absolute AC power-balance residual (MW): min=0.000000, max=0.000006
+- Absolute DC power-balance residual (MW): min=0.000000, max=0.000000
 
 ## Scenario completeness
 
@@ -64,7 +66,15 @@
 - has_mutated_generator_snapshot: 25/25
 - has_scenario_input_state: 25/25
 
+## Data quality flags
+
+- scenarios_with_base_kv_missing: 5/25
+- scenarios_with_missing_branch_ratings: 5/25
+- scenarios_with_source_generator_q_limit_inconsistency: 10/25
+- scenarios_with_source_voltage_limit_inconsistency: 10/25
+
 ## Notes
 
 - Scenario records include base grid snapshot, scenario input state, and AC/DC power flow results.
+- Scenario records also carry explicit data-quality flags for inherited source-case artifacts and balance residuals.
 - Question items reference scenario_id and keep benchmark-specific fields compact.

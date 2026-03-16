@@ -72,7 +72,7 @@ The following statements are directly supported by the frozen artifacts and are 
 | Release directory | `datasets/pfbench/v1/` |
 | Frozen timestamp recorded in artifacts | `2026-03-16T00:00:00Z` |
 | Question schema version | `0.3.0` |
-| Scenario schema version | `0.3.0` |
+| Scenario schema version | `0.5.0` |
 | Solver config digest | `1e327091a96546e4` |
 | Validation digest | `47d30c89ce58d5fe` |
 

@@ -39,6 +39,7 @@ _SCENARIO_FIELDS = [
     ("base_grid_snapshot", "Original network state before mutations are applied."),
     ("scenario_spec", "Canonical mutation specification including seed and solver modes."),
     ("scenario_input_state", "Full post-mutation network input state used by the solvers."),
+    ("data_quality_flags", "Scenario-level quality annotations for inherited source-case artifacts and solver balance residuals."),
     ("powerflow_results", "AC and DC power-flow outputs for the mutated network."),
     ("provenance", "Scenario-level lineage including schema versions and solver configuration digest."),
     ("metadata", "Operational metadata such as mutation names, scenario text, and generation timestamp."),
@@ -50,6 +51,7 @@ _CORE_NESTED_FIELDS = [
     ("scenario_input_state.generator_setpoints", "Generator dispatch and voltage setpoints entering the solve."),
     ("scenario_input_state.branch_state", "Per-branch topology state and tap/phase-shift parameters entering the solve."),
     ("scenario_input_state.totals", "Scenario-level system totals such as total load, scheduled generation, and active branch count."),
+    ("data_quality_flags", "Inherited source-case issues and per-scenario power-balance residuals recorded for downstream filtering."),
     ("powerflow_results.ac.bus_results", "AC bus voltage and injection results."),
     ("powerflow_results.ac.generator_results", "AC generator injection results."),
     ("powerflow_results.ac.branch_results", "AC branch from/to-side flow results."),
@@ -68,7 +70,7 @@ _QUERY_FAMILY_DESCRIPTIONS = {
     "max_branch_abs_p_from": "Identify the branch with largest absolute AC from-side active flow.",
     "max_branch_abs_q_from": "Identify the branch with largest absolute AC from-side reactive flow.",
     "compare_ac_dc_branch_p_from": "Compare AC and DC from-side active branch flow for the same active branch.",
-    "is_voltage_violation_present": "Detect whether any AC bus voltage limit violations are present in the scenario.",
+    "is_voltage_violation_present": "Detect whether any AC bus voltage limit violations are present after excluding inherited source-case limit inconsistencies.",
 }
 
 _DATASET_FILES = {
@@ -280,6 +282,7 @@ def _release_readme(
         "## Caveats\n\n"
         "- Gold answers come only from the in-repo solvers and stored scenario records.\n"
         "- The AC solver assumes exactly one slack bus and does not enforce generator reactive power limits.\n"
+        "- Scenario records preserve source-case fidelity and explicitly flag inherited metadata inconsistencies such as missing nominal voltages or pre-existing limit violations.\n"
         "- Failed scenarios are preserved instead of silently dropped, but the current default release recorded zero failed scenarios.\n"
         "- The code repository is a supporting generation artifact; the dataset collection in this directory is the primary archival object for a data-paper submission.\n"
     )
@@ -426,6 +429,8 @@ def _quality_report(
         "- The AC solver assumes exactly one slack bus.\n"
         "- Generator reactive power limits are not enforced by the current in-repo solver.\n"
         "- AC results come from an in-repo Newton-Raphson polar solver; DC results come from an in-repo linear DC solver.\n"
+        "- Scenario records include `data_quality_flags` so inherited source-case artifacts remain visible instead of being silently normalized away.\n"
+        "- Voltage-violation questions exclude buses already flagged as source-case voltage-limit inconsistencies.\n"
         "- Scenarios are perturbation-based benchmark cases, not operational dispatch studies.\n\n"
         "## Mutation coverage\n\n"
         f"{mutation_lines}\n\n"

@@ -12,6 +12,7 @@
     "base_grid_snapshot",
     "scenario_spec",
     "scenario_input_state",
+    "data_quality_flags",
     "powerflow_results",
     "provenance",
     "metadata"
@@ -34,7 +35,10 @@
       "properties": {
         "case_name": {"type": "string"},
         "source_library": {"type": ["string", "null"]},
-        "source_url": {"type": ["string", "null"]},
+        "source_url": {
+          "type": ["string", "null"],
+          "description": "Pinned upstream tag/commit URL for the source case when available; null means no stable upstream URL was recorded."
+        },
         "matpower_case_format_version": {"type": ["string", "null"]},
         "base_mva": {"type": "number"},
         "counts": {"type": "object"},
@@ -48,8 +52,8 @@
       "required": ["bus_partition", "buses", "generators", "branches"],
       "properties": {
         "bus_partition": {"type": "object"},
-        "buses": {"type": "array"},
-        "generators": {"type": "array"},
+        "buses": {"type": "array", "items": {"$ref": "#/$defs/bus_snapshot"}},
+        "generators": {"type": "array", "items": {"$ref": "#/$defs/generator_snapshot"}},
         "branches": {"type": "array"}
       },
       "additionalProperties": false
@@ -83,13 +87,45 @@
           "type": "object",
           "required": ["slack_bus_ids", "pv_bus_ids", "pq_bus_ids"]
         },
-        "buses": {"type": "array"},
-        "generators": {"type": "array"},
+        "buses": {"type": "array", "items": {"$ref": "#/$defs/bus_snapshot"}},
+        "generators": {"type": "array", "items": {"$ref": "#/$defs/generator_snapshot"}},
         "branches": {"type": "array"},
         "bus_loads": {"type": "array"},
-        "generator_setpoints": {"type": "array"},
+        "generator_setpoints": {"type": "array", "items": {"$ref": "#/$defs/generator_setpoint"}},
         "branch_state": {"type": "array"},
         "totals": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "data_quality_flags": {
+      "type": "object",
+      "required": [
+        "base_kv_missing_bus_ids",
+        "source_voltage_limit_inconsistency_bus_ids",
+        "source_generator_q_limit_inconsistency_gen_ids",
+        "missing_branch_rating_branch_ids",
+        "ac_power_balance_residual_mw",
+        "dc_power_balance_residual_mw"
+      ],
+      "properties": {
+        "base_kv_missing_bus_ids": {
+          "type": "array",
+          "items": {"type": "integer"}
+        },
+        "source_voltage_limit_inconsistency_bus_ids": {
+          "type": "array",
+          "items": {"type": "integer"}
+        },
+        "source_generator_q_limit_inconsistency_gen_ids": {
+          "type": "array",
+          "items": {"type": "integer"}
+        },
+        "missing_branch_rating_branch_ids": {
+          "type": "array",
+          "items": {"type": "integer"}
+        },
+        "ac_power_balance_residual_mw": {"type": "number"},
+        "dc_power_balance_residual_mw": {"type": "number"}
       },
       "additionalProperties": false
     },
@@ -99,11 +135,21 @@
       "properties": {
         "ac": {
           "type": "object",
-          "required": ["solver_name", "bus_results", "generator_results", "branch_results", "system_summary"]
+          "required": ["solver_name", "bus_results", "generator_results", "branch_results", "system_summary"],
+          "properties": {
+            "bus_results": {"type": "array", "items": {"$ref": "#/$defs/bus_result"}},
+            "generator_results": {"type": "array", "items": {"$ref": "#/$defs/generator_result"}},
+            "system_summary": {"$ref": "#/$defs/system_summary"}
+          }
         },
         "dc": {
           "type": "object",
-          "required": ["solver_name", "bus_results", "generator_results", "branch_results", "system_summary"]
+          "required": ["solver_name", "bus_results", "generator_results", "branch_results", "system_summary"],
+          "properties": {
+            "bus_results": {"type": "array", "items": {"$ref": "#/$defs/bus_result"}},
+            "generator_results": {"type": "array", "items": {"$ref": "#/$defs/generator_result"}},
+            "system_summary": {"$ref": "#/$defs/system_summary"}
+          }
         }
       },
       "additionalProperties": false
@@ -150,6 +196,123 @@
         "schema_versions": {"type": "object"},
         "generated_at": {"type": "string"},
         "dataset_version": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "bus_snapshot": {
+      "type": "object",
+      "description": "Bus input metadata. `base_kv` is null when the source case stores 0 as an unspecified nominal voltage; the original value remains in `base_kv_raw` and `base_kv_is_missing`.",
+      "properties": {
+        "vm_input_pu": {"type": "number"},
+        "va_input_deg": {"type": "number"},
+        "base_kv": {
+          "type": ["number", "null"],
+          "description": "Normalized nominal voltage in kV. Null means the source case left this unspecified."
+        },
+        "base_kv_raw": {
+          "type": "number",
+          "description": "Raw source-case base_kv field before missing-value normalization."
+        },
+        "base_kv_is_missing": {
+          "type": "boolean",
+          "description": "True when the source case used 0 to mean nominal voltage metadata was unspecified."
+        }
+      },
+      "additionalProperties": true
+    },
+    "generator_snapshot": {
+      "type": "object",
+      "properties": {
+        "q_limit_violated": {
+          "type": ["boolean", "null"],
+          "description": "Whether the stored reactive output lies outside [qmin_mvar, qmax_mvar]. Null is reserved for records without a reactive-output value."
+        }
+      },
+      "additionalProperties": true
+    },
+    "generator_setpoint": {
+      "type": "object",
+      "properties": {
+        "q_limit_violated": {
+          "type": ["boolean", "null"],
+          "description": "Whether the input reactive setpoint lies outside [qmin_mvar, qmax_mvar]. Null is reserved for records without a reactive-output value."
+        }
+      },
+      "additionalProperties": true
+    },
+    "bus_result": {
+      "type": "object",
+      "properties": {
+        "p_net_injection_mw": {
+          "type": "number",
+          "description": "Active net injection under the solver sign convention. In AC results this includes modeled bus shunt conductance; in DC results shunt conductance is omitted."
+        },
+        "q_net_injection_mvar": {
+          "type": ["number", "null"],
+          "description": "Reactive net injection under the solver sign convention. In AC results this includes modeled bus shunt susceptance. Null in DC results because the DC model omits reactive quantities."
+        },
+        "shunt_p_demand_mw": {
+          "type": "number",
+          "description": "Active shunt demand implied by the AC bus shunt conductance model. This is 0.0 in DC results because shunt conductance is omitted."
+        },
+        "shunt_q_injection_mvar": {
+          "type": ["number", "null"],
+          "description": "Reactive shunt injection implied by the AC bus shunt model. Null in DC results because shunts are not part of the DC solve."
+        }
+      },
+      "additionalProperties": true
+    },
+    "generator_result": {
+      "type": "object",
+      "properties": {
+        "qg_mvar": {
+          "type": ["number", "null"],
+          "description": "Solved reactive output. Null in DC results because the DC model does not solve for reactive power."
+        },
+        "q_limit_violated": {
+          "type": ["boolean", "null"],
+          "description": "Whether `qg_mvar` violates [qmin_mvar, qmax_mvar]. Null in DC results because `qg_mvar` is omitted."
+        }
+      },
+      "additionalProperties": true
+    },
+    "system_summary": {
+      "type": "object",
+      "properties": {
+        "total_gen_q_mvar": {
+          "type": ["number", "null"],
+          "description": "Total solved reactive generation. Null in DC results."
+        },
+        "total_shunt_p_demand_mw": {
+          "type": "number",
+          "description": "Total modeled active shunt demand included in the AC power balance. This is 0.0 when the solver mode omits shunt conductance, such as DC."
+        },
+        "total_shunt_q_injection_mvar": {
+          "type": ["number", "null"],
+          "description": "Total modeled shunt reactive injection. Null when the solver mode does not include reactive shunts, such as DC."
+        },
+        "total_loss_q_mvar": {
+          "type": ["number", "null"],
+          "description": "Total reactive branch loss. Null in DC results."
+        },
+        "net_bus_injection_p_mw": {
+          "type": "number",
+          "description": "Sum of per-bus active net injections under the solver sign convention."
+        },
+        "net_bus_injection_q_mvar": {
+          "type": ["number", "null"],
+          "description": "Sum of per-bus reactive net injections. Null in DC results."
+        },
+        "power_balance_residual_p_mw": {
+          "type": "number",
+          "description": "Active power balance residual after accounting for generation, load, modeled shunt demand, and branch loss."
+        },
+        "power_balance_residual_q_mvar": {
+          "type": ["number", "null"],
+          "description": "Reactive power balance residual after accounting for generation, load, modeled shunt injection, and branch loss. Null in DC results."
+        }
       },
       "additionalProperties": true
     }

@@ -37,6 +37,8 @@
 - The AC solver assumes exactly one slack bus.
 - Generator reactive power limits are not enforced by the current in-repo solver.
 - AC results come from an in-repo Newton-Raphson polar solver; DC results come from an in-repo linear DC solver.
+- Scenario records include `data_quality_flags` so inherited source-case artifacts remain visible instead of being silently normalized away.
+- Voltage-violation questions exclude buses already flagged as source-case voltage-limit inconsistencies.
 - Scenarios are perturbation-based benchmark cases, not operational dispatch studies.
 
 ## Mutation coverage

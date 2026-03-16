@@ -27,6 +27,7 @@
 - `base_grid_snapshot`: Original network state before mutations are applied.
 - `scenario_spec`: Canonical mutation specification including seed and solver modes.
 - `scenario_input_state`: Full post-mutation network input state used by the solvers.
+- `data_quality_flags`: Scenario-level quality annotations for inherited source-case artifacts and solver balance residuals.
 - `powerflow_results`: AC and DC power-flow outputs for the mutated network.
 - `provenance`: Scenario-level lineage including schema versions and solver configuration digest.
 - `metadata`: Operational metadata such as mutation names, scenario text, and generation timestamp.
@@ -38,6 +39,7 @@
 - `scenario_input_state.generator_setpoints`: Generator dispatch and voltage setpoints entering the solve.
 - `scenario_input_state.branch_state`: Per-branch topology state and tap/phase-shift parameters entering the solve.
 - `scenario_input_state.totals`: Scenario-level system totals such as total load, scheduled generation, and active branch count.
+- `data_quality_flags`: Inherited source-case issues and per-scenario power-balance residuals recorded for downstream filtering.
 - `powerflow_results.ac.bus_results`: AC bus voltage and injection results.
 - `powerflow_results.ac.generator_results`: AC generator injection results.
 - `powerflow_results.ac.branch_results`: AC branch from/to-side flow results.
@@ -54,6 +56,6 @@
 - `direct_branch_q_from`: Direct retrieval of AC from-side reactive branch flow.
 - `direct_bus_va`: Direct retrieval of AC bus voltage angle.
 - `direct_bus_vm`: Direct retrieval of AC bus voltage magnitude.
-- `is_voltage_violation_present`: Detect whether any AC bus voltage limit violations are present in the scenario.
+- `is_voltage_violation_present`: Detect whether any AC bus voltage limit violations are present after excluding inherited source-case limit inconsistencies.
 - `max_branch_abs_p_from`: Identify the branch with largest absolute AC from-side active flow.
 - `max_branch_abs_q_from`: Identify the branch with largest absolute AC from-side reactive flow.

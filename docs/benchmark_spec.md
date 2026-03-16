@@ -21,7 +21,10 @@ then the benchmark is hard for a reviewer to regard as engineering-complete.
 - `base_grid_snapshot`
 - `scenario_spec`
 - `scenario_input_state`
+- `data_quality_flags`
 - `powerflow_results`
+
+AC system summaries should carry explicit shunt-demand and shunt-injection terms so active and reactive balance residuals are interpretable without inferring shunt behavior from the solver internals.
 
 ## Required question item fields
 

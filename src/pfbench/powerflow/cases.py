@@ -19,8 +19,16 @@ _PANDAPOWER_CASES = (
 )
 
 
+def _pandapower_source_url(version: str) -> str:
+    return (
+        "https://github.com/e2nIEE/pandapower/blob/"
+        f"v{version}/pandapower/networks/power_system_test_cases.py"
+    )
+
+
 def _load_pandapower_case(case_name: str) -> dict[str, Any]:
     try:
+        import pandapower
         import pandapower.networks as pn
         from pandapower.converter import to_mpc
     except Exception as exc:  # pragma: no cover - exercised in environments without pandapower
@@ -47,7 +55,7 @@ def _load_pandapower_case(case_name: str) -> dict[str, Any]:
     return {
         "case_name": case_name,
         "source_library": "pandapower",
-        "source_url": f"pandapower.networks.{case_name}()",
+        "source_url": _pandapower_source_url(pandapower.__version__),
         "matpower_case_format_version": str(mpc.get("version", "2")),
         "baseMVA": float(mpc["baseMVA"]),
         "bus": bus,

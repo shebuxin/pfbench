@@ -1,10 +1,10 @@
-# Release notes for pfbench v1.0.0
+# Release notes for pfbench v1.1.0
 
 ## Scope
 
-- Frozen release date encoded in artifacts: `2026-03-15T00:00:00Z`
-- Solved scenarios shipped: 124
-- Question items shipped: 1240
+- Frozen release date encoded in artifacts: `2026-03-16T00:00:00Z`
+- Solved scenarios shipped: 1060
+- Question items shipped: 10600
 - Failed scenarios recorded for transparency: 0
 - Cases included: case14, case30, case39, case57, case118, case145, case300
 - Query families included: direct_bus_vm, direct_bus_va, argmin_bus_vm, argmax_bus_va_abs, direct_branch_p_from, direct_branch_q_from, max_branch_abs_p_from, max_branch_abs_q_from, compare_ac_dc_branch_p_from, is_voltage_violation_present

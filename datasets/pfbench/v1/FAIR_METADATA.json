@@ -1,9 +1,9 @@
 {
-  "title": "pfbench v1.0.0",
+  "title": "pfbench v1.1.0",
   "dataset_id": "pfbench",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "release_status": "frozen_local_package",
-  "release_timestamp": "2026-03-15T00:00:00Z",
+  "release_timestamp": "2026-03-16T00:00:00Z",
   "description": "Structured power-flow benchmark release containing full scenario records, question items, schemas, validation summaries, and release documentation.",
   "subjects": [
     "power systems",
@@ -54,8 +54,8 @@
       "case145",
       "case300"
     ],
-    "num_scenarios": 124,
-    "num_questions": 1240,
+    "num_scenarios": 1060,
+    "num_questions": 10600,
     "query_families": [
       "direct_bus_vm",
       "direct_bus_va",
@@ -74,9 +74,9 @@
       "private_test": 0.15
     },
     "split_counts_observed": {
-      "private_test": 170,
-      "dev": 860,
-      "public_test": 210
+      "dev": 7280,
+      "private_test": 1740,
+      "public_test": 1580
     }
   },
   "quality_control": {
@@ -90,7 +90,7 @@
     {
       "path": "FAIR_METADATA.json",
       "description": "Release-level metadata focused on findability, accessibility, interoperability, and reuse.",
-      "size_bytes": 6833,
+      "size_bytes": 6841,
       "format": "json"
     },
     {
@@ -108,19 +108,19 @@
     {
       "path": "QUALITY_REPORT.md",
       "description": "Data quality, validation, and known-limitations summary.",
-      "size_bytes": 2514,
+      "size_bytes": 2537,
       "format": "md"
     },
     {
       "path": "README.md",
       "description": "Dataset card and access guide for the release package.",
-      "size_bytes": 5262,
+      "size_bytes": 5286,
       "format": "md"
     },
     {
       "path": "RELEASE_NOTES.md",
       "description": "Release-specific notes for version tracking and downstream repositories.",
-      "size_bytes": 1327,
+      "size_bytes": 1329,
       "format": "md"
     },
     {
@@ -132,13 +132,13 @@
     {
       "path": "SUBMISSION_FRAMING.md",
       "description": "Paper-positioning notes that keep the dataset release as the primary artifact.",
-      "size_bytes": 1309,
+      "size_bytes": 1311,
       "format": "md"
     },
     {
       "path": "VALIDATION_SUMMARY.json",
       "description": "Structured validation results for the frozen release.",
-      "size_bytes": 707,
+      "size_bytes": 710,
       "format": "json"
     },
     {
@@ -150,7 +150,7 @@
     {
       "path": "configs/generation_config.yaml",
       "description": "Exact generation config used to build the frozen release.",
-      "size_bytes": 745,
+      "size_bytes": 751,
       "format": "yaml"
     },
     {
@@ -174,49 +174,49 @@
     {
       "path": "manifest.json",
       "description": "Release manifest with counts, paths, schema versions, and solver configuration digest.",
-      "size_bytes": 1058,
+      "size_bytes": 1060,
       "format": "json"
     },
     {
       "path": "questions.jsonl",
       "description": "Question item collection for benchmark evaluation.",
-      "size_bytes": 2457750,
+      "size_bytes": 20272204,
       "format": "jsonl"
     },
     {
       "path": "questions.parquet",
       "description": "Columnar export of the question item collection.",
-      "size_bytes": 118459,
+      "size_bytes": 713709,
       "format": "parquet"
     },
     {
       "path": "reference_question_item.json",
       "description": "One frozen question record for quick inspection.",
-      "size_bytes": 2025,
+      "size_bytes": 1974,
       "format": "json"
     },
     {
       "path": "reference_scenario_record.json",
       "description": "One frozen scenario record for quick inspection.",
-      "size_bytes": 68805,
+      "size_bytes": 68652,
       "format": "json"
     },
     {
       "path": "report.md",
       "description": "Human-readable summary report with coverage counts and metric ranges.",
-      "size_bytes": 1934,
+      "size_bytes": 1981,
       "format": "md"
     },
     {
       "path": "scenarios.jsonl",
       "description": "Full scenario records with mutated network state and AC/DC results.",
-      "size_bytes": 30622599,
+      "size_bytes": 209155385,
       "format": "jsonl"
     },
     {
       "path": "scenarios.parquet",
       "description": "Columnar export of the scenario record collection.",
-      "size_bytes": 2263766,
+      "size_bytes": 13463434,
       "format": "parquet"
     },
     {

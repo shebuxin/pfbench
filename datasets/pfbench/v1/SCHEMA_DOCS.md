@@ -13,7 +13,7 @@ The release ships two primary record collections:
 
 ## Versioning
 
-- Dataset version: `1.0.0`
+- Dataset version: `1.1.0`
 - Frozen schema versions copied from the source repository: `{"question_item": "0.3.0", "scenario_record": "0.3.0"}`
 - Dataset version and schema version are tracked separately so the data collection can be frozen without claiming a new wire format when the schema is unchanged.
 

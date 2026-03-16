@@ -1,14 +1,22 @@
-# pfbench v1.0.0
+# pfbench v1.1.0
 
 This directory is the frozen dataset release package for the Phase 1 `pfbench` benchmark collection. It is intended to be uploaded unchanged to a third-party data repository.
+
+## Repository note
+
+The source-code repository intentionally does not track the large generated `questions.jsonl`, `scenarios.jsonl`, and Parquet payloads in this directory because GitHub rejects very large benchmark blobs.
+
+- The compact metadata and documentation in this directory remain tracked in Git.
+- The full archival payload should be regenerated locally with `pfbench build-release --config configs/release_v1.yaml --out datasets/pfbench/v1`.
+- After regeneration, upload the complete directory to the external data repository and cite that deposited package in the manuscript.
 
 ## Release summary
 
 - Dataset ID: `pfbench`
-- Dataset version: `1.0.0`
-- Freeze timestamp recorded in artifacts: `2026-03-15T00:00:00Z`
-- Questions: 1240
-- Solved scenarios: 124
+- Dataset version: `1.1.0`
+- Freeze timestamp recorded in artifacts: `2026-03-16T00:00:00Z`
+- Questions: 10600
+- Solved scenarios: 1060
 - Failed scenarios logged: 0
 - Cases: case14, case30, case39, case57, case118, case145, case300
 - Query families: direct_bus_vm, direct_bus_va, argmin_bus_vm, argmax_bus_va_abs, direct_branch_p_from, direct_branch_q_from, max_branch_abs_p_from, max_branch_abs_q_from, compare_ac_dc_branch_p_from, is_voltage_violation_present
@@ -64,26 +72,26 @@ This directory is the frozen dataset release package for the Phase 1 `pfbench` b
 
 ## Coverage by case
 
-- `case118`: 160 questions, 16 solved scenarios
-- `case14`: 240 questions, 24 solved scenarios
-- `case145`: 120 questions, 12 solved scenarios
-- `case30`: 240 questions, 24 solved scenarios
-- `case300`: 80 questions, 8 solved scenarios
-- `case39`: 200 questions, 20 solved scenarios
-- `case57`: 200 questions, 20 solved scenarios
+- `case118`: 1500 questions, 150 solved scenarios
+- `case14`: 2200 questions, 220 solved scenarios
+- `case145`: 600 questions, 60 solved scenarios
+- `case30`: 2200 questions, 220 solved scenarios
+- `case300`: 300 questions, 30 solved scenarios
+- `case39`: 1900 questions, 190 solved scenarios
+- `case57`: 1900 questions, 190 solved scenarios
 
 ## Coverage by query family
 
-- `argmax_bus_va_abs`: 124 questions
-- `argmin_bus_vm`: 124 questions
-- `compare_ac_dc_branch_p_from`: 124 questions
-- `direct_branch_p_from`: 124 questions
-- `direct_branch_q_from`: 124 questions
-- `direct_bus_va`: 124 questions
-- `direct_bus_vm`: 124 questions
-- `is_voltage_violation_present`: 124 questions
-- `max_branch_abs_p_from`: 124 questions
-- `max_branch_abs_q_from`: 124 questions
+- `argmax_bus_va_abs`: 1060 questions
+- `argmin_bus_vm`: 1060 questions
+- `compare_ac_dc_branch_p_from`: 1060 questions
+- `direct_branch_p_from`: 1060 questions
+- `direct_branch_q_from`: 1060 questions
+- `direct_bus_va`: 1060 questions
+- `direct_bus_vm`: 1060 questions
+- `is_voltage_violation_present`: 1060 questions
+- `max_branch_abs_p_from`: 1060 questions
+- `max_branch_abs_q_from`: 1060 questions
 
 ## Caveats
 

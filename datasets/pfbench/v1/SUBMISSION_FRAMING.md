@@ -8,7 +8,7 @@
 
 ## Evidence the paper can center
 
-- Frozen release size: 124 solved scenarios and 1240 question items.
+- Frozen release size: 1060 solved scenarios and 10600 question items.
 - Coverage across 7 network cases and 10 structured query families.
 - Explicit scenario-level provenance, full post-mutation network state, and AC/DC power-flow results.
 - Schema validation, checksums, release manifest, and transparent failed-scenario logging.

@@ -185,6 +185,12 @@ The submission-ready release workflow writes an independent archive-style direct
 
 This folder is meant to be uploaded unchanged to the eventual third-party data repository.
 
+Repository note:
+
+- large generated `questions.jsonl`, `scenarios.jsonl`, and Parquet payloads under `datasets/pfbench/` are intentionally not tracked in Git
+- generate them locally with `pfbench build-release ...` or obtain them from the external data repository after deposition
+- the Git repository keeps the compact release metadata, documentation, configs, schemas, and reference items
+
 ## Default demo scale
 
 The default config currently generates:

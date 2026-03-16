@@ -2,8 +2,8 @@
 
 ## Coverage statistics
 
-- Question items: 1240
-- Solved scenarios: 124
+- Question items: 10600
+- Solved scenarios: 1060
 - Failed scenarios logged: 0
 - Cases covered: case14, case30, case39, case57, case118, case145, case300
 - Query families covered: direct_bus_vm, direct_bus_va, argmin_bus_vm, argmax_bus_va_abs, direct_branch_p_from, direct_branch_q_from, max_branch_abs_p_from, max_branch_abs_q_from, compare_ac_dc_branch_p_from, is_voltage_violation_present
@@ -13,9 +13,9 @@
 - Deterministic scenario-level assignment using stable hashing with target ratios dev=70%, public_test=15%, private_test=15%.
 - All questions derived from the same scenario inherit the same split.
 - Stored split counts in this release:
-- `dev`: 860 questions
-- `private_test`: 170 questions
-- `public_test`: 210 questions
+- `dev`: 7280 questions
+- `private_test`: 1740 questions
+- `public_test`: 1580 questions
 
 ## Scenario rejection and failure policy
 
@@ -41,24 +41,24 @@
 
 ## Mutation coverage
 
-- `line_outage`: 60
-- `scale_bus_load`: 315
-- `set_tap_ratio`: 53
+- `line_outage`: 493
+- `scale_bus_load`: 2641
+- `set_tap_ratio`: 427
 
 ## Scenario solve status by case
 
-- `case118`: solved=16, failed=0, attempts=16
-- `case14`: solved=24, failed=0, attempts=24
-- `case145`: solved=12, failed=0, attempts=12
-- `case30`: solved=24, failed=0, attempts=24
-- `case300`: solved=8, failed=0, attempts=8
-- `case39`: solved=20, failed=0, attempts=20
-- `case57`: solved=20, failed=0, attempts=20
+- `case118`: solved=150, failed=0, attempts=150
+- `case14`: solved=220, failed=0, attempts=220
+- `case145`: solved=60, failed=0, attempts=60
+- `case30`: solved=220, failed=0, attempts=220
+- `case300`: solved=30, failed=0, attempts=30
+- `case39`: solved=190, failed=0, attempts=190
+- `case57`: solved=190, failed=0, attempts=190
 
 ## Validation of the frozen release
 
 - Manifest counts match files: `True`
-- Scenario records validated: 124
-- Question items validated: 1240
-- Gold answers validated against response schemas: 1240
-- Validation digest: `d439235c5907cc1a`
+- Scenario records validated: 1060
+- Question items validated: 10600
+- Gold answers validated against response schemas: 10600
+- Validation digest: `47d30c89ce58d5fe`

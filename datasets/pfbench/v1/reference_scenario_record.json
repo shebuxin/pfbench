@@ -1,8 +1,8 @@
 {
   "dataset_id": "pfbench",
-  "scenario_id": "scn_case14_445800b46d00",
+  "scenario_id": "scn_case14_1f939718742a",
   "source_case": "case14",
-  "split": "private_test",
+  "split": "dev",
   "grid_reference": {
     "case_name": "case14",
     "source_library": "matpower",
@@ -705,7 +705,7 @@
     ]
   },
   "scenario_spec": {
-    "seed": 1023646121,
+    "seed": 1924443378,
     "source_case": "case14",
     "solver_modes": [
       "ac",
@@ -714,30 +714,24 @@
     "mutations": [
       {
         "op": "scale_bus_load",
-        "bus_id": 2,
-        "p_mult": 0.9164,
-        "q_mult": 0.9793
+        "bus_id": 3,
+        "p_mult": 1.0149,
+        "q_mult": 1.0242
       },
       {
         "op": "scale_bus_load",
         "bus_id": 5,
-        "p_mult": 1.0526,
-        "q_mult": 1.0472
+        "p_mult": 1.1387,
+        "q_mult": 0.9794
       },
       {
         "op": "scale_bus_load",
-        "bus_id": 6,
-        "p_mult": 0.9677,
-        "q_mult": 1.0359
-      },
-      {
-        "op": "line_outage",
-        "branch_id": 10,
-        "from_bus": 5,
-        "to_bus": 6
+        "bus_id": 10,
+        "p_mult": 0.9551,
+        "q_mult": 1.1041
       }
     ],
-    "scenario_id": "scn_case14_445800b46d00"
+    "scenario_id": "scn_case14_1f939718742a"
   },
   "scenario_input_state": {
     "bus_partition": {
@@ -785,8 +779,8 @@
         "bus_name": "Bus 2 HV",
         "type_code": 2,
         "type_label": "PV",
-        "pd_mw": 19.88588,
-        "qd_mvar": 12.43711,
+        "pd_mw": 21.7,
+        "qd_mvar": 12.7,
         "gs_mw": 0.0,
         "bs_mvar": 0.0,
         "area": 1,
@@ -802,8 +796,8 @@
         "bus_name": "Bus 3 HV",
         "type_code": 2,
         "type_label": "PV",
-        "pd_mw": 94.2,
-        "qd_mvar": 19.0,
+        "pd_mw": 95.60358,
+        "qd_mvar": 19.4598,
         "gs_mw": 0.0,
         "bs_mvar": 0.0,
         "area": 1,
@@ -836,8 +830,8 @@
         "bus_name": "Bus 5 HV",
         "type_code": 1,
         "type_label": "PQ",
-        "pd_mw": 7.99976,
-        "qd_mvar": 1.67552,
+        "pd_mw": 8.65412,
+        "qd_mvar": 1.56704,
         "gs_mw": 0.0,
         "bs_mvar": 0.0,
         "area": 1,
@@ -853,8 +847,8 @@
         "bus_name": "Bus 6 LV",
         "type_code": 2,
         "type_label": "PV",
-        "pd_mw": 10.83824,
-        "qd_mvar": 7.76925,
+        "pd_mw": 11.2,
+        "qd_mvar": 7.5,
         "gs_mw": 0.0,
         "bs_mvar": 0.0,
         "area": 1,
@@ -921,8 +915,8 @@
         "bus_name": "Bus 10 LV",
         "type_code": 1,
         "type_label": "PQ",
-        "pd_mw": 9.0,
-        "qd_mvar": 5.8,
+        "pd_mw": 8.5959,
+        "qd_mvar": 6.40378,
         "gs_mw": 0.0,
         "bs_mvar": 0.0,
         "area": 1,
@@ -1245,7 +1239,7 @@
         "rate_c_mva": 0.0,
         "tap_ratio": 0.932,
         "shift_deg": 0.0,
-        "status": 0,
+        "status": 1,
         "angmin_deg": -360.0,
         "angmax_deg": 360.0,
         "element_type": "transformer"
@@ -1429,13 +1423,13 @@
       },
       {
         "bus_id": 2,
-        "pd_mw": 19.88588,
-        "qd_mvar": 12.43711
+        "pd_mw": 21.7,
+        "qd_mvar": 12.7
       },
       {
         "bus_id": 3,
-        "pd_mw": 94.2,
-        "qd_mvar": 19.0
+        "pd_mw": 95.60358,
+        "qd_mvar": 19.4598
       },
       {
         "bus_id": 4,
@@ -1444,13 +1438,13 @@
       },
       {
         "bus_id": 5,
-        "pd_mw": 7.99976,
-        "qd_mvar": 1.67552
+        "pd_mw": 8.65412,
+        "qd_mvar": 1.56704
       },
       {
         "bus_id": 6,
-        "pd_mw": 10.83824,
-        "qd_mvar": 7.76925
+        "pd_mw": 11.2,
+        "qd_mvar": 7.5
       },
       {
         "bus_id": 7,
@@ -1469,8 +1463,8 @@
       },
       {
         "bus_id": 10,
-        "pd_mw": 9.0,
-        "qd_mvar": 5.8
+        "pd_mw": 8.5959,
+        "qd_mvar": 6.40378
       },
       {
         "bus_id": 11,
@@ -1641,7 +1635,7 @@
         "branch_id": 10,
         "from_bus": 5,
         "to_bus": 6,
-        "status": 0,
+        "status": 1,
         "tap_ratio": 0.932,
         "shift_deg": 0.0,
         "element_type": "transformer"
@@ -1738,18 +1732,18 @@
       }
     ],
     "totals": {
-      "total_pd_mw": 257.22388,
-      "total_qd_mvar": 73.58188,
+      "total_pd_mw": 261.0536,
+      "total_qd_mvar": 74.53062,
       "total_scheduled_pg_mw": 272.4,
       "num_active_generators": 5,
-      "num_active_branches": 19
+      "num_active_branches": 20
     }
   },
   "powerflow_results": {
     "ac": {
       "converged": true,
       "solver_name": "newton_raphson_polar",
-      "iterations": 5,
+      "iterations": 3,
       "tolerance": 1e-08,
       "solver_options": {
         "max_iterations": 30,
@@ -1759,17 +1753,17 @@
         1
       ],
       "system_summary": {
-        "total_load_p_mw": 257.22388,
-        "total_load_q_mvar": 73.58188,
-        "total_gen_p_mw": 273.743644,
-        "total_gen_q_mvar": 96.69056,
-        "total_loss_p_mw": 16.519764,
-        "total_loss_q_mvar": 44.788559,
+        "total_load_p_mw": 261.0536,
+        "total_load_q_mvar": 74.53062,
+        "total_gen_p_mw": 274.697476,
+        "total_gen_q_mvar": 84.301845,
+        "total_loss_p_mw": 13.643876,
+        "total_loss_q_mvar": 30.936003,
         "min_vm_bus_id": 3,
         "min_vm_pu": 1.01,
         "max_vm_bus_id": 8,
         "max_vm_pu": 1.09,
-        "num_active_branches": 19
+        "num_active_branches": 20
       },
       "bus_results": [
         {
@@ -1780,43 +1774,43 @@
           "va_deg": 0.0,
           "pd_mw": 0.0,
           "qd_mvar": 0.0,
-          "pg_mw": 233.743644,
-          "qg_mvar": -20.642943,
-          "p_net_injection_mw": 233.743644,
-          "q_net_injection_mvar": -20.642943
+          "pg_mw": 234.697476,
+          "qg_mvar": -16.906966,
+          "p_net_injection_mw": 234.697476,
+          "q_net_injection_mvar": -16.906966
         },
         {
           "bus_id": 2,
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.045,
-          "va_deg": -5.080279,
-          "pd_mw": 19.88588,
-          "qd_mvar": 12.43711,
+          "va_deg": -5.035958,
+          "pd_mw": 21.7,
+          "qd_mvar": 12.7,
           "pg_mw": 40.0,
-          "qg_mvar": 39.138299,
-          "p_net_injection_mw": 20.11412,
-          "q_net_injection_mvar": 26.701189
+          "qg_mvar": 44.136337,
+          "p_net_injection_mw": 18.3,
+          "q_net_injection_mvar": 31.436337
         },
         {
           "bus_id": 3,
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.01,
-          "va_deg": -13.114735,
-          "pd_mw": 94.2,
-          "qd_mvar": 19.0,
+          "va_deg": -12.876766,
+          "pd_mw": 95.60358,
+          "qd_mvar": 19.4598,
           "pg_mw": 0.0,
-          "qg_mvar": 24.671767,
-          "p_net_injection_mw": -94.2,
-          "q_net_injection_mvar": 5.671767
+          "qg_mvar": 26.183759,
+          "p_net_injection_mw": -95.60358,
+          "q_net_injection_mvar": 6.723959
         },
         {
           "bus_id": 4,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.01814,
-          "va_deg": -10.989454,
+          "vm_pu": 1.017548,
+          "va_deg": -10.397287,
           "pd_mw": 47.8,
           "qd_mvar": -3.9,
           "pg_mw": 0.0,
@@ -1828,60 +1822,60 @@
           "bus_id": 5,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.027159,
-          "va_deg": -8.615569,
-          "pd_mw": 7.99976,
-          "qd_mvar": 1.67552,
+          "vm_pu": 1.019349,
+          "va_deg": -8.857375,
+          "pd_mw": 8.65412,
+          "qd_mvar": 1.56704,
           "pg_mw": 0.0,
           "qg_mvar": 0.0,
-          "p_net_injection_mw": -7.99976,
-          "q_net_injection_mvar": -1.67552
+          "p_net_injection_mw": -8.65412,
+          "q_net_injection_mvar": -1.56704
         },
         {
           "bus_id": 6,
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.07,
-          "va_deg": -27.194283,
-          "pd_mw": 10.83824,
-          "qd_mvar": 7.76925,
+          "va_deg": -14.293531,
+          "pd_mw": 11.2,
+          "qd_mvar": 7.5,
           "pg_mw": 0.0,
-          "qg_mvar": 38.4543,
-          "p_net_injection_mw": -10.83824,
-          "q_net_injection_mvar": 30.68505
+          "qg_mvar": 13.106678,
+          "p_net_injection_mw": -11.2,
+          "q_net_injection_mvar": 5.606678
         },
         {
           "bus_id": 7,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.065647,
-          "va_deg": -17.172485,
+          "vm_pu": 1.061263,
+          "va_deg": -13.423968,
           "pd_mw": 0.0,
           "qd_mvar": 0.0,
           "pg_mw": 0.0,
           "qg_mvar": 0.0,
-          "p_net_injection_mw": 0.0,
-          "q_net_injection_mvar": -0.0
+          "p_net_injection_mw": -0.0,
+          "q_net_injection_mvar": 0.0
         },
         {
           "bus_id": 8,
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.09,
-          "va_deg": -17.172485,
+          "va_deg": -13.423968,
           "pd_mw": 0.0,
           "qd_mvar": 0.0,
           "pg_mw": 0.0,
-          "qg_mvar": 15.069137,
+          "qg_mvar": 17.782037,
           "p_net_injection_mw": 0.0,
-          "q_net_injection_mvar": 15.069137
+          "q_net_injection_mvar": 17.782037
         },
         {
           "bus_id": 9,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.068198,
-          "va_deg": -20.337915,
+          "vm_pu": 1.055431,
+          "va_deg": -14.993035,
           "pd_mw": 29.5,
           "qd_mvar": 16.6,
           "pg_mw": 0.0,
@@ -1893,21 +1887,21 @@
           "bus_id": 10,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.061374,
-          "va_deg": -21.813206,
-          "pd_mw": 9.0,
-          "qd_mvar": 5.8,
+          "vm_pu": 1.050277,
+          "va_deg": -15.13202,
+          "pd_mw": 8.5959,
+          "qd_mvar": 6.40378,
           "pg_mw": 0.0,
           "qg_mvar": 0.0,
-          "p_net_injection_mw": -9.0,
-          "q_net_injection_mvar": -5.8
+          "p_net_injection_mw": -8.5959,
+          "q_net_injection_mvar": -6.40378
         },
         {
           "bus_id": 11,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.062328,
-          "va_deg": -24.570363,
+          "vm_pu": 1.056552,
+          "va_deg": -14.843486,
           "pd_mw": 3.5,
           "qd_mvar": 1.8,
           "pg_mw": 0.0,
@@ -1919,8 +1913,8 @@
           "bus_id": 12,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.054307,
-          "va_deg": -27.516323,
+          "vm_pu": 1.055149,
+          "va_deg": -15.147292,
           "pd_mw": 6.1,
           "qd_mvar": 1.6,
           "pg_mw": 0.0,
@@ -1932,8 +1926,8 @@
           "bus_id": 13,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.052535,
-          "va_deg": -27.049014,
+          "vm_pu": 1.05031,
+          "va_deg": -15.22624,
           "pd_mw": 13.5,
           "qd_mvar": 5.8,
           "pg_mw": 0.0,
@@ -1945,8 +1939,8 @@
           "bus_id": 14,
           "type_code": 1,
           "type_label": "PQ",
-          "vm_pu": 1.042233,
-          "va_deg": -24.224281,
+          "vm_pu": 1.035212,
+          "va_deg": -16.095392,
           "pd_mw": 14.9,
           "qd_mvar": 5.0,
           "pg_mw": 0.0,
@@ -1959,8 +1953,8 @@
         {
           "gen_id": 1,
           "bus_id": 1,
-          "pg_mw": 233.743644,
-          "qg_mvar": -20.642943,
+          "pg_mw": 234.697476,
+          "qg_mvar": -16.906966,
           "qmax_mvar": 10.0,
           "qmin_mvar": 0.0,
           "vg_pu": 1.06,
@@ -1972,7 +1966,7 @@
           "gen_id": 2,
           "bus_id": 2,
           "pg_mw": 40.0,
-          "qg_mvar": 39.138299,
+          "qg_mvar": 44.136337,
           "qmax_mvar": 50.0,
           "qmin_mvar": -40.0,
           "vg_pu": 1.045,
@@ -1984,7 +1978,7 @@
           "gen_id": 3,
           "bus_id": 3,
           "pg_mw": 0.0,
-          "qg_mvar": 24.671767,
+          "qg_mvar": 26.183759,
           "qmax_mvar": 40.0,
           "qmin_mvar": 0.0,
           "vg_pu": 1.01,
@@ -1996,7 +1990,7 @@
           "gen_id": 4,
           "bus_id": 6,
           "pg_mw": 0.0,
-          "qg_mvar": 38.4543,
+          "qg_mvar": 13.106678,
           "qmax_mvar": 24.0,
           "qmin_mvar": -6.0,
           "vg_pu": 1.07,
@@ -2008,7 +2002,7 @@
           "gen_id": 5,
           "bus_id": 8,
           "pg_mw": 0.0,
-          "qg_mvar": 15.069137,
+          "qg_mvar": 17.782037,
           "qmax_mvar": 24.0,
           "qmin_mvar": -6.0,
           "vg_pu": 1.09,
@@ -2025,14 +2019,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 159.837231,
-          "q_from_mvar": -21.091994,
-          "p_to_mw": -155.374022,
-          "q_to_mvar": 28.869581,
-          "p_loss_mw": 4.463209,
-          "q_loss_mvar": 7.777587,
-          "s_from_mva": 161.222866,
-          "s_to_mva": 158.033349
+          "p_from_mw": 158.49672,
+          "q_from_mvar": -20.780612,
+          "p_to_mw": -154.109044,
+          "q_to_mvar": 28.327585,
+          "p_loss_mw": 4.387676,
+          "q_loss_mvar": 7.546973,
+          "s_from_mva": 159.853195,
+          "s_to_mva": 156.690936
         },
         {
           "branch_id": 2,
@@ -2041,14 +2035,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 73.906413,
-          "q_from_mvar": 0.449051,
-          "p_to_mw": -71.274887,
-          "q_to_mvar": 5.054598,
-          "p_loss_mw": 2.631525,
-          "q_loss_mvar": 5.503649,
-          "s_from_mva": 73.907777,
-          "s_to_mva": 71.453891
+          "p_from_mw": 76.200756,
+          "q_from_mvar": 3.873646,
+          "p_to_mw": -73.3874,
+          "q_to_mvar": 2.419933,
+          "p_loss_mw": 2.813356,
+          "q_loss_mvar": 6.293579,
+          "s_from_mva": 76.299151,
+          "s_to_mva": 73.427288
         },
         {
           "branch_id": 3,
@@ -2057,14 +2051,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 75.868673,
-          "q_from_mvar": 3.308521,
-          "p_to_mw": -73.377853,
-          "q_to_mvar": 2.55981,
-          "p_loss_mw": 2.49082,
-          "q_loss_mvar": 5.868331,
-          "s_from_mva": 75.940778,
-          "s_to_mva": 73.422489
+          "p_from_mw": 74.123326,
+          "q_from_mvar": 3.473965,
+          "p_to_mw": -71.74433,
+          "q_to_mvar": 1.923248,
+          "p_loss_mw": 2.378996,
+          "q_loss_mvar": 5.397212,
+          "s_from_mva": 74.204689,
+          "s_to_mva": 71.770104
         },
         {
           "branch_id": 4,
@@ -2073,14 +2067,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 61.722655,
-          "q_from_mvar": -3.07283,
-          "p_to_mw": -59.694616,
-          "q_to_mvar": 5.607718,
-          "p_loss_mw": 2.028038,
-          "q_loss_mvar": 2.534888,
-          "s_from_mva": 61.799097,
-          "s_to_mva": 59.957433
+          "p_from_mw": 56.449256,
+          "q_from_mvar": -1.551885,
+          "p_to_mw": -54.753563,
+          "q_to_mvar": 3.080408,
+          "p_loss_mw": 1.695694,
+          "q_loss_mvar": 1.528523,
+          "s_from_mva": 56.470584,
+          "s_to_mva": 54.840145
         },
         {
           "branch_id": 5,
@@ -2089,14 +2083,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 37.896814,
-          "q_from_mvar": -2.404083,
-          "p_to_mw": -37.147702,
-          "q_to_mvar": 0.976827,
-          "p_loss_mw": 0.749112,
-          "q_loss_mvar": -1.427256,
-          "s_from_mva": 37.972992,
-          "s_to_mva": 37.160543
+          "p_from_mw": 41.836462,
+          "q_from_mvar": 1.186673,
+          "p_to_mw": -40.918737,
+          "q_to_mvar": -2.071469,
+          "p_loss_mw": 0.917724,
+          "q_loss_mvar": -0.884797,
+          "s_from_mva": 41.853288,
+          "s_to_mva": 40.971137
         },
         {
           "branch_id": 6,
@@ -2105,14 +2099,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -20.822147,
-          "q_from_mvar": 3.111957,
-          "p_to_mw": 21.116263,
-          "q_to_mvar": -3.677576,
-          "p_loss_mw": 0.294116,
-          "q_loss_mvar": -0.56562,
-          "s_from_mva": 21.05341,
-          "s_to_mva": 21.434112
+          "p_from_mw": -23.85925,
+          "q_from_mvar": 4.800712,
+          "p_to_mw": 24.252734,
+          "q_to_mvar": -5.111941,
+          "p_loss_mw": 0.393484,
+          "q_loss_mvar": -0.311229,
+          "s_from_mva": 24.337433,
+          "s_to_mva": 24.785622
         },
         {
           "branch_id": 7,
@@ -2121,14 +2115,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -99.139254,
-          "q_from_mvar": 11.755739,
-          "p_to_mw": 100.42283,
-          "q_to_mvar": -7.706945,
-          "p_loss_mw": 1.283576,
-          "q_loss_mvar": 4.048793,
-          "s_from_mva": 99.833807,
-          "s_to_mva": 100.71813
+          "p_from_mw": -61.145334,
+          "q_from_mvar": 15.922421,
+          "p_to_mw": 61.660079,
+          "q_to_mvar": -14.298757,
+          "p_loss_mw": 0.514745,
+          "q_loss_mvar": 1.623665,
+          "s_from_mva": 63.184455,
+          "s_to_mva": 63.296286
         },
         {
           "branch_id": 8,
@@ -2137,14 +2131,14 @@
           "status": 1,
           "element_type": "transformer",
           "tap_ratio": 0.978,
-          "p_from_mw": 57.137618,
-          "q_from_mvar": -9.162705,
-          "p_to_mw": -57.137618,
-          "q_to_mvar": 15.624151,
-          "p_loss_mw": 0.0,
-          "q_loss_mvar": 6.461446,
-          "s_from_mva": 57.867629,
-          "s_to_mva": 59.235306
+          "p_from_mw": 27.879529,
+          "q_from_mvar": -9.625087,
+          "p_to_mw": -27.879529,
+          "q_to_mvar": 11.305586,
+          "p_loss_mw": -0.0,
+          "q_loss_mvar": 1.6805,
+          "s_from_mva": 29.494244,
+          "s_to_mva": 30.084621
         },
         {
           "branch_id": 9,
@@ -2153,30 +2147,30 @@
           "status": 1,
           "element_type": "transformer",
           "tap_ratio": 0.969,
-          "p_from_mw": 32.779989,
-          "q_from_mvar": -0.623176,
-          "p_to_mw": -32.779989,
-          "q_to_mvar": 6.038476,
-          "p_loss_mw": -0.0,
-          "q_loss_mvar": 5.4153,
-          "s_from_mva": 32.785912,
-          "s_to_mva": 33.33153
+          "p_from_mw": 15.966633,
+          "q_from_mvar": -0.365802,
+          "p_to_mw": -15.966633,
+          "q_to_mvar": 1.652297,
+          "p_loss_mw": 0.0,
+          "q_loss_mvar": 1.286495,
+          "s_from_mva": 15.970823,
+          "s_to_mva": 16.051899
         },
         {
           "branch_id": 10,
           "from_bus": 5,
           "to_bus": 6,
-          "status": 0,
+          "status": 1,
           "element_type": "transformer",
           "tap_ratio": 0.932,
-          "p_from_mw": 0.0,
-          "q_from_mvar": 0.0,
-          "p_to_mw": 0.0,
-          "q_to_mvar": 0.0,
-          "p_loss_mw": 0.0,
-          "q_loss_mvar": 0.0,
-          "s_from_mva": 0.0,
-          "s_to_mva": 0.0
+          "p_from_mw": 43.991938,
+          "q_from_mvar": 12.383253,
+          "p_to_mw": -43.991938,
+          "q_to_mvar": -7.982935,
+          "p_loss_mw": -0.0,
+          "q_loss_mvar": 4.400319,
+          "s_from_mva": 45.701593,
+          "s_to_mva": 44.710378
         },
         {
           "branch_id": 11,
@@ -2185,14 +2179,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -19.466794,
-          "q_from_mvar": 14.022231,
-          "p_to_mw": 19.94429,
-          "q_to_mvar": -13.022295,
-          "p_loss_mw": 0.477496,
-          "q_loss_mvar": 0.999936,
-          "s_from_mva": 23.991228,
-          "s_to_mva": 23.819212
+          "p_from_mw": 7.26585,
+          "q_from_mvar": 3.79103,
+          "p_to_mw": -7.21013,
+          "q_to_mvar": -3.674347,
+          "p_loss_mw": 0.055719,
+          "q_loss_mvar": 0.116683,
+          "s_from_mva": 8.195394,
+          "s_to_mva": 8.092392
         },
         {
           "branch_id": 12,
@@ -2201,14 +2195,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 4.5789,
-          "q_from_mvar": 4.371183,
-          "p_to_mw": -4.535879,
-          "q_to_mvar": -4.281645,
-          "p_loss_mw": 0.043021,
-          "q_loss_mvar": 0.089538,
-          "s_from_mva": 6.330369,
-          "s_to_mva": 6.237523
+          "p_from_mw": 7.786816,
+          "q_from_mvar": 2.519552,
+          "p_to_mw": -7.714907,
+          "q_to_mvar": -2.36989,
+          "p_loss_mw": 0.071909,
+          "q_loss_mvar": 0.149662,
+          "s_from_mva": 8.184293,
+          "s_to_mva": 8.070698
         },
         {
           "branch_id": 13,
@@ -2217,14 +2211,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 4.049654,
-          "q_from_mvar": 12.291635,
-          "p_to_mw": -3.952885,
-          "q_to_mvar": -12.101067,
-          "p_loss_mw": 0.096769,
-          "q_loss_mvar": 0.190568,
-          "s_from_mva": 12.941561,
-          "s_to_mva": 12.730323
+          "p_from_mw": 17.739272,
+          "q_from_mvar": 7.279031,
+          "p_to_mw": -17.526842,
+          "q_to_mvar": -6.86069,
+          "p_loss_mw": 0.21243,
+          "q_loss_mvar": 0.418341,
+          "s_from_mva": 19.174621,
+          "s_to_mva": 18.821777
         },
         {
           "branch_id": 14,
@@ -2234,13 +2228,13 @@
           "element_type": "line",
           "tap_ratio": 1.0,
           "p_from_mw": -0.0,
-          "q_from_mvar": -14.732465,
+          "q_from_mvar": -17.313231,
           "p_to_mw": 0.0,
-          "q_to_mvar": 15.069137,
+          "q_to_mvar": 17.782037,
           "p_loss_mw": 0.0,
-          "q_loss_mvar": 0.336672,
-          "s_from_mva": 14.732465,
-          "s_to_mva": 15.069137
+          "q_loss_mvar": 0.468805,
+          "s_from_mva": 17.313231,
+          "s_to_mva": 17.782037
         },
         {
           "branch_id": 15,
@@ -2249,14 +2243,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 57.137618,
-          "q_from_mvar": -0.891685,
-          "p_to_mw": -57.137618,
-          "q_to_mvar": 4.055093,
+          "p_from_mw": 27.879529,
+          "q_from_mvar": 6.007645,
+          "p_to_mw": -27.879529,
+          "q_to_mvar": -5.213191,
           "p_loss_mw": 0.0,
-          "q_loss_mvar": 3.163407,
-          "s_from_mva": 57.144575,
-          "s_to_mva": 57.281333
+          "q_loss_mvar": 0.794454,
+          "s_from_mva": 28.519466,
+          "s_to_mva": 28.362749
         },
         {
           "branch_id": 16,
@@ -2265,14 +2259,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 33.246923,
-          "q_from_mvar": -3.445152,
-          "p_to_mw": -32.935463,
-          "q_to_mvar": 4.272513,
-          "p_loss_mw": 0.31146,
-          "q_loss_mvar": 0.827361,
-          "s_from_mva": 33.424945,
-          "s_to_mva": 33.21143
+          "p_from_mw": 4.911383,
+          "q_from_mvar": 4.593466,
+          "p_to_mw": -4.898469,
+          "q_to_mvar": -4.559162,
+          "p_loss_mw": 0.012914,
+          "q_loss_mvar": 0.034304,
+          "s_from_mva": 6.724702,
+          "s_to_mva": 6.691858
         },
         {
           "branch_id": 17,
@@ -2281,14 +2275,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 27.170684,
-          "q_from_mvar": -1.568534,
-          "p_to_mw": -26.345554,
-          "q_to_mvar": 3.323697,
-          "p_loss_mw": 0.82513,
-          "q_loss_mvar": 1.755162,
-          "s_from_mva": 27.215921,
-          "s_to_mva": 26.554381
+          "p_from_mw": 9.43478,
+          "q_from_mvar": 3.532205,
+          "p_to_mw": -9.318969,
+          "q_to_mvar": -3.28586,
+          "p_loss_mw": 0.115811,
+          "q_loss_mvar": 0.246345,
+          "s_from_mva": 10.074301,
+          "s_to_mva": 9.881298
         },
         {
           "branch_id": 18,
@@ -2297,14 +2291,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 23.935463,
-          "q_from_mvar": -10.072513,
-          "p_to_mw": -23.44429,
-          "q_to_mvar": 11.222295,
-          "p_loss_mw": 0.491173,
-          "q_loss_mvar": 1.149782,
-          "s_from_mva": 25.968479,
-          "s_to_mva": 25.991819
+          "p_from_mw": -3.697431,
+          "q_from_mvar": -1.844618,
+          "p_to_mw": 3.71013,
+          "q_to_mvar": 1.874347,
+          "p_loss_mw": 0.0127,
+          "q_loss_mvar": 0.029729,
+          "s_from_mva": 4.132022,
+          "s_to_mva": 4.156711
         },
         {
           "branch_id": 19,
@@ -2313,14 +2307,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -1.564121,
-          "q_from_mvar": 2.681645,
-          "p_to_mw": 1.583275,
-          "q_to_mvar": -2.664315,
-          "p_loss_mw": 0.019155,
-          "q_loss_mvar": 0.01733,
-          "s_from_mva": 3.104464,
-          "s_to_mva": 3.099247
+          "p_from_mw": 1.614907,
+          "q_from_mvar": 0.76989,
+          "p_to_mw": -1.608556,
+          "q_to_mvar": -0.764143,
+          "p_loss_mw": 0.006351,
+          "q_loss_mvar": 0.005746,
+          "s_from_mva": 1.789038,
+          "s_to_mva": 1.780834
         },
         {
           "branch_id": 20,
@@ -2329,14 +2323,14 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -11.13039,
-          "q_from_mvar": 8.965382,
-          "p_to_mw": 11.445554,
-          "q_to_mvar": -8.323697,
-          "p_loss_mw": 0.315164,
-          "q_loss_mvar": 0.641685,
-          "s_from_mva": 14.292084,
-          "s_to_mva": 14.152195
+          "p_from_mw": 5.635399,
+          "q_from_mvar": 1.824834,
+          "p_to_mw": -5.581031,
+          "q_to_mvar": -1.71414,
+          "p_loss_mw": 0.054367,
+          "q_loss_mvar": 0.110694,
+          "s_from_mva": 5.92349,
+          "s_to_mva": 5.838338
         }
       ]
     },
@@ -2353,9 +2347,9 @@
         1
       ],
       "system_summary": {
-        "total_load_p_mw": 257.22388,
-        "total_load_q_mvar": 73.58188,
-        "total_gen_p_mw": 259.488934,
+        "total_load_p_mw": 261.0536,
+        "total_load_q_mvar": 74.53062,
+        "total_gen_p_mw": 265.246143,
         "total_gen_q_mvar": null,
         "total_loss_p_mw": 0.0,
         "total_loss_q_mvar": null,
@@ -2363,7 +2357,7 @@
         "min_vm_pu": 1.0,
         "max_vm_bus_id": 1,
         "max_vm_pu": 1.0,
-        "num_active_branches": 19
+        "num_active_branches": 20
       },
       "bus_results": [
         {
@@ -2374,9 +2368,9 @@
           "va_deg": 0.0,
           "pd_mw": 0.0,
           "qd_mvar": 0.0,
-          "pg_mw": 219.488934,
+          "pg_mw": 225.246143,
           "qg_mvar": null,
-          "p_net_injection_mw": 219.488934,
+          "p_net_injection_mw": 225.246143,
           "q_net_injection_mvar": null
         },
         {
@@ -2384,12 +2378,12 @@
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.0,
-          "va_deg": -5.098463,
-          "pd_mw": 19.88588,
-          "qd_mvar": 12.43711,
+          "va_deg": -5.152818,
+          "pd_mw": 21.7,
+          "qd_mvar": 12.7,
           "pg_mw": 40.0,
           "qg_mvar": null,
-          "p_net_injection_mw": 20.11412,
+          "p_net_injection_mw": 18.3,
           "q_net_injection_mvar": null
         },
         {
@@ -2397,12 +2391,12 @@
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.0,
-          "va_deg": -13.328961,
-          "pd_mw": 94.2,
-          "qd_mvar": 19.0,
+          "va_deg": -13.250108,
+          "pd_mw": 95.60358,
+          "qd_mvar": 19.4598,
           "pg_mw": 0.0,
           "qg_mvar": null,
-          "p_net_injection_mw": -94.2,
+          "p_net_injection_mw": -95.60358,
           "q_net_injection_mvar": null
         },
         {
@@ -2410,7 +2404,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -11.208505,
+          "va_deg": -10.87703,
           "pd_mw": 47.8,
           "qd_mvar": -3.9,
           "pg_mw": 0.0,
@@ -2423,12 +2417,12 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -8.830498,
-          "pd_mw": 7.99976,
-          "qd_mvar": 1.67552,
+          "va_deg": -9.361338,
+          "pd_mw": 8.65412,
+          "qd_mvar": 1.56704,
           "pg_mw": 0.0,
           "qg_mvar": null,
-          "p_net_injection_mw": -7.99976,
+          "p_net_injection_mw": -8.65412,
           "q_net_injection_mvar": null
         },
         {
@@ -2436,12 +2430,12 @@
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.0,
-          "va_deg": -27.763842,
-          "pd_mw": 10.83824,
-          "qd_mvar": 7.76925,
+          "va_deg": -15.968813,
+          "pd_mw": 11.2,
+          "qd_mvar": 7.5,
           "pg_mw": 0.0,
           "qg_mvar": null,
-          "p_net_injection_mw": -10.83824,
+          "p_net_injection_mw": -11.2,
           "q_net_injection_mvar": null
         },
         {
@@ -2449,7 +2443,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -18.135373,
+          "va_deg": -14.668813,
           "pd_mw": 0.0,
           "qd_mvar": 0.0,
           "pg_mw": 0.0,
@@ -2462,7 +2456,7 @@
           "type_code": 2,
           "type_label": "PV",
           "vm_pu": 1.0,
-          "va_deg": -18.135373,
+          "va_deg": -14.668813,
           "pd_mw": 0.0,
           "qd_mvar": 0.0,
           "pg_mw": 0.0,
@@ -2475,7 +2469,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -21.646694,
+          "va_deg": -16.534808,
           "pd_mw": 29.5,
           "qd_mvar": 16.6,
           "pg_mw": 0.0,
@@ -2488,12 +2482,12 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -23.163008,
-          "pd_mw": 9.0,
-          "qd_mvar": 5.8,
+          "va_deg": -16.847315,
+          "pd_mw": 8.5959,
+          "qd_mvar": 6.40378,
           "pg_mw": 0.0,
           "qg_mvar": null,
-          "p_net_injection_mw": -9.0,
+          "p_net_injection_mw": -8.5959,
           "q_net_injection_mvar": null
         },
         {
@@ -2501,7 +2495,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -25.619187,
+          "va_deg": -16.611686,
           "pd_mw": 3.5,
           "qd_mvar": 1.8,
           "pg_mw": 0.0,
@@ -2514,7 +2508,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -28.328879,
+          "va_deg": -17.061953,
           "pd_mw": 6.1,
           "qd_mvar": 1.6,
           "pg_mw": 0.0,
@@ -2527,7 +2521,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -28.071788,
+          "va_deg": -17.217501,
           "pd_mw": 13.5,
           "qd_mvar": 5.8,
           "pg_mw": 0.0,
@@ -2540,7 +2534,7 @@
           "type_code": 1,
           "type_label": "PQ",
           "vm_pu": 1.0,
-          "va_deg": -25.754933,
+          "va_deg": -18.132326,
           "pd_mw": 14.9,
           "qd_mvar": 5.0,
           "pg_mw": 0.0,
@@ -2553,7 +2547,7 @@
         {
           "gen_id": 1,
           "bus_id": 1,
-          "pg_mw": 219.488934,
+          "pg_mw": 225.246143,
           "qg_mvar": null,
           "qmax_mvar": 10.0,
           "qmin_mvar": 0.0,
@@ -2619,8 +2613,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 150.388652,
-          "p_to_mw": -150.388652,
+          "p_from_mw": 151.991945,
+          "p_to_mw": -151.991945,
           "p_loss_mw": 0.0
         },
         {
@@ -2630,8 +2624,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 69.100282,
-          "p_to_mw": -69.100282,
+          "p_from_mw": 73.254198,
+          "p_to_mw": -73.254198,
           "p_loss_mw": 0.0
         },
         {
@@ -2641,8 +2635,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 72.56114,
-          "p_to_mw": -72.56114,
+          "p_from_mw": 71.386763,
+          "p_to_mw": -71.386763,
           "p_loss_mw": 0.0
         },
         {
@@ -2652,8 +2646,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 60.48114,
-          "p_to_mw": -60.48114,
+          "p_from_mw": 56.661951,
+          "p_to_mw": -56.661951,
           "p_loss_mw": 0.0
         },
         {
@@ -2663,8 +2657,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 37.460492,
-          "p_to_mw": -37.460492,
+          "p_from_mw": 42.243231,
+          "p_to_mw": -42.243231,
           "p_loss_mw": 0.0
         },
         {
@@ -2674,8 +2668,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -21.63886,
-          "p_to_mw": 21.63886,
+          "p_from_mw": -24.216817,
+          "p_to_mw": 24.216817,
           "p_loss_mw": 0.0
         },
         {
@@ -2685,8 +2679,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -98.561014,
-          "p_to_mw": 98.561014,
+          "p_from_mw": -62.820759,
+          "p_to_mw": 62.820759,
           "p_loss_mw": 0.0
         },
         {
@@ -2696,8 +2690,8 @@
           "status": 1,
           "element_type": "transformer",
           "tap_ratio": 0.978,
-          "p_from_mw": 59.11257,
-          "p_to_mw": -59.11257,
+          "p_from_mw": 32.358351,
+          "p_to_mw": -32.358351,
           "p_loss_mw": 0.0
         },
         {
@@ -2707,19 +2701,19 @@
           "status": 1,
           "element_type": "transformer",
           "tap_ratio": 0.969,
-          "p_from_mw": 33.803633,
-          "p_to_mw": -33.803633,
+          "p_from_mw": 18.322476,
+          "p_to_mw": -18.322476,
           "p_loss_mw": 0.0
         },
         {
           "branch_id": 10,
           "from_bus": 5,
           "to_bus": 6,
-          "status": 0,
+          "status": 1,
           "element_type": "transformer",
           "tap_ratio": 0.932,
-          "p_from_mw": 0.0,
-          "p_to_mw": 0.0,
+          "p_from_mw": 49.0978,
+          "p_to_mw": -49.0978,
           "p_loss_mw": 0.0
         },
         {
@@ -2729,8 +2723,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -18.819153,
-          "p_to_mw": 18.819153,
+          "p_from_mw": 5.641147,
+          "p_to_mw": -5.641147,
           "p_loss_mw": 0.0
         },
         {
@@ -2740,8 +2734,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 3.855112,
-          "p_to_mw": -3.855112,
+          "p_from_mw": 7.458226,
+          "p_to_mw": -7.458226,
           "p_loss_mw": 0.0
         },
         {
@@ -2751,8 +2745,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 4.125801,
-          "p_to_mw": -4.125801,
+          "p_from_mw": 16.729645,
+          "p_to_mw": -16.729645,
           "p_loss_mw": 0.0
         },
         {
@@ -2762,8 +2756,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -0.0,
-          "p_to_mw": 0.0,
+          "p_from_mw": 0.0,
+          "p_to_mw": -0.0,
           "p_loss_mw": 0.0
         },
         {
@@ -2773,8 +2767,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 55.707766,
-          "p_to_mw": -55.707766,
+          "p_from_mw": 29.604372,
+          "p_to_mw": -29.604372,
           "p_loss_mw": 0.0
         },
         {
@@ -2784,8 +2778,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 31.319153,
-          "p_to_mw": -31.319153,
+          "p_from_mw": 6.454753,
+          "p_to_mw": -6.454753,
           "p_loss_mw": 0.0
         },
         {
@@ -2795,8 +2789,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 26.519087,
-          "p_to_mw": -26.519087,
+          "p_from_mw": 10.31213,
+          "p_to_mw": -10.31213,
           "p_loss_mw": 0.0
         },
         {
@@ -2806,8 +2800,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": 22.319153,
-          "p_to_mw": -22.319153,
+          "p_from_mw": -2.141147,
+          "p_to_mw": 2.141147,
           "p_loss_mw": 0.0
         },
         {
@@ -2817,8 +2811,8 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -2.244888,
-          "p_to_mw": 2.244888,
+          "p_from_mw": 1.358226,
+          "p_to_mw": -1.358226,
           "p_loss_mw": 0.0
         },
         {
@@ -2828,16 +2822,16 @@
           "status": 1,
           "element_type": "line",
           "tap_ratio": 1.0,
-          "p_from_mw": -11.619087,
-          "p_to_mw": 11.619087,
+          "p_from_mw": 4.58787,
+          "p_to_mw": -4.58787,
           "p_loss_mw": 0.0
         }
       ]
     }
   },
   "provenance": {
-    "dataset_version": "1.0.0",
-    "generated_at": "2026-03-15T00:00:00Z",
+    "dataset_version": "1.1.0",
+    "generated_at": "2026-03-16T00:00:00Z",
     "schema_versions": {
       "question_item": "0.3.0",
       "scenario_record": "0.3.0"
@@ -2847,15 +2841,14 @@
     "source_reference": "https://raw.githubusercontent.com/MATPOWER/matpower/master/data/case14.m"
   },
   "metadata": {
-    "seed": 1023646121,
-    "scenario_text": "Base case case14; mutations: scale load at bus 2 by P×0.9164 and Q×0.9793; scale load at bus 5 by P×1.0526 and Q×1.0472; scale load at bus 6 by P×0.9677 and Q×1.0359; switch off branch 10 (5-6).",
+    "seed": 1924443378,
+    "scenario_text": "Base case case14; mutations: scale load at bus 3 by P×1.0149 and Q×1.0242; scale load at bus 5 by P×1.1387 and Q×0.9794; scale load at bus 10 by P×0.9551 and Q×1.1041.",
     "mutation_ops": [
       "scale_bus_load",
       "scale_bus_load",
-      "scale_bus_load",
-      "line_outage"
+      "scale_bus_load"
     ],
-    "num_mutations": 4,
+    "num_mutations": 3,
     "case_family": "transmission",
     "solver_bundle": [
       "ac",
@@ -2868,8 +2861,8 @@
       "question_item": "0.3.0",
       "scenario_record": "0.3.0"
     },
-    "generated_at": "2026-03-15T00:00:00Z",
-    "dataset_version": "1.0.0",
+    "generated_at": "2026-03-16T00:00:00Z",
+    "dataset_version": "1.1.0",
     "solver_assumptions": [
       "single_slack_bus",
       "generator_q_limits_not_enforced",

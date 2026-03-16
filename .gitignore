@@ -4,3 +4,8 @@ __pycache__/
 .venv/
 .env
 *.parquet
+
+# Large frozen release payloads are generated locally and uploaded externally,
+# not stored in the Git repository.
+/datasets/pfbench/*/*.jsonl
+/datasets/pfbench/*/*.parquet

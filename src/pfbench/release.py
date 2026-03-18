@@ -333,7 +333,7 @@ def _license_and_redistribution() -> str:
         "## What this release contains\n\n"
         "- Derived scenario records generated from MATPOWER-style network data and pandapower-backed converted cases.\n"
         "- Derived question items whose gold answers come from solver outputs on those frozen scenarios.\n"
-        "- Supporting schemas, manifests, reports, and documentation generated within this repository.\n\n"
+        "- Supporting schemas, manifests, reports, and documentation produced within this repository.\n\n"
         "## Upstream source projects\n\n"
         "- MATPOWER is distributed under the BSD 3-Clause license.\n"
         "- pandapower is distributed under the BSD 3-Clause license.\n"
@@ -481,7 +481,7 @@ def _submission_framing(manifest: dict[str, Any], summary: dict[str, Any]) -> st
         "## What should remain secondary\n\n"
         "- Internal code organization of the factory.\n"
         "- CLI ergonomics.\n"
-        "- Future OpenAI or agent-evaluation plans that are not part of the frozen dataset release.\n"
+        "- Future evaluation extensions that are not part of the frozen dataset release.\n"
     )
 
 

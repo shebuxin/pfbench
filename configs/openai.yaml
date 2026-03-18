@@ -1,7 +1,0 @@
-openai:
-  model: gpt-5.4
-  temperature: 0.0
-  max_output_tokens: 600
-  timeout_s: 60
-  retries: 2
-  prompt_variant: standard_en

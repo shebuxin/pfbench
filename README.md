@@ -20,7 +20,6 @@ The design principle is strict:
 - gold answers come only from solver truth
 - scenario records keep the engineering state
 - question items keep the benchmark-facing interface
-- LLM work is a later phase, not the source of truth
 
 ## Phase 0 / Phase 1 status
 
@@ -222,8 +221,6 @@ The default config currently generates:
 
 ```text
 pfbench/
-├─ AGENTS.md
-├─ CODEX_PHASE_PLAN.md
 ├─ README.md
 ├─ environment.yml
 ├─ pyproject.toml
@@ -256,4 +253,3 @@ Core code layout:
 - `grid_reference.source_url` is pinned to an upstream tag or installed package version when a stable reference is available.
 - `is_voltage_violation_present` excludes buses already flagged as inherited source-case voltage-limit inconsistencies so the label reflects scenario-specific violations.
 - The frozen release package is the primary archival artifact for a data-paper submission; the codebase is the supporting generation method.
-- Later phases can add OpenAI runner and agent benchmark functionality without changing the Phase 1 truth pipeline.

@@ -1,8 +1,0 @@
-solver:
-  ac:
-    tolerance: 1.0e-8
-    max_iterations: 30
-  dc:
-    enabled: true
-  retry:
-    max_attempts: 8

@@ -1,6 +1,6 @@
 # pfbench
 
-`pfbench` is a reproducible **power-flow benchmark release and dataset factory** for structured evaluation of tool-using or context-grounded power-system models.
+`pfbench` is a reproducible **power-flow benchmark release and dataset factory** for structured evaluation of power-system tasks.
 
 The repository is organized to support an IEEE Data Description style release: the primary artifact is a **frozen dataset package**, while the codebase provides the generation, validation, and packaging pipeline used to produce that artifact.
 
@@ -16,7 +16,7 @@ This separation is deliberate:
 - gold answers come only from solver outputs
 - scenario records preserve engineering state
 - question items keep the evaluation interface compact
-- grading is programmatic rather than LLM-judged
+- grading is programmatic
 
 ## Current Frozen Release
 
@@ -231,7 +231,6 @@ Core code layout:
 - Some source-case artifacts are preserved rather than normalized away; these are exposed through `data_quality_flags`.
 - `is_voltage_violation_present` excludes buses already flagged as inherited source-case voltage-limit inconsistencies.
 - Extended cases depend on `pandapower` being installed in the active environment.
-- OpenAI-related evaluation remains future work and is not part of the current truth-generation pipeline.
 
 ## Citation and Release Use
 

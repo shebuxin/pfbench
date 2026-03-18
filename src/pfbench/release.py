@@ -481,7 +481,7 @@ def _submission_framing(manifest: dict[str, Any], summary: dict[str, Any]) -> st
         "## What should remain secondary\n\n"
         "- Internal code organization of the factory.\n"
         "- CLI ergonomics.\n"
-        "- Future OpenAI or agent-evaluation plans that are not part of the frozen dataset release.\n"
+        "- Future evaluation extensions that are not part of the frozen dataset release.\n"
     )
 
 

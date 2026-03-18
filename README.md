@@ -1,67 +1,82 @@
 # pfbench
 
-`pfbench` is a reproducible **power-flow benchmark dataset factory**.
+`pfbench` is a reproducible **power-flow benchmark release and dataset factory** for structured evaluation of tool-using or context-grounded power-system models.
 
-Phase 0 and Phase 1 in this repository focus on a trusted local pipeline:
+The repository is organized to support an IEEE Data Description style release: the primary artifact is a **frozen dataset package**, while the codebase provides the generation, validation, and packaging pipeline used to produce that artifact.
 
-```text
-base case
--> scenario mutation
--> scenario input snapshot
--> AC/DC power-flow solve
--> scenario record
--> question generation
--> programmatic grading
--> report
-```
+## Release Focus
 
-The design principle is strict:
+The current release model is built around two linked artifacts:
 
-- gold answers come only from solver truth
-- scenario records keep the engineering state
-- question items keep the benchmark-facing interface
-- LLM work is a later phase, not the source of truth
+- **Scenario records**: engineering-complete solved power-flow scenarios with base-case reference, mutation specification, post-mutation input state, AC/DC solver outputs, provenance, and quality flags.
+- **Question items**: benchmark-facing tasks derived from scenario records, each with a prompt, response schema, solver-derived gold answer, and programmatic grading rule.
 
-## Phase 0 / Phase 1 status
+This separation is deliberate:
 
-The repository now supports:
+- gold answers come only from solver outputs
+- scenario records preserve engineering state
+- question items keep the evaluation interface compact
+- grading is programmatic rather than LLM-judged
 
-- runnable conda environment and editable package install
-- `python -m pfbench.cli ...` and `pfbench ...` CLI entrypoints
-- deterministic scenario generation from seeds
-- separate `scenario record` and `question item` artifacts
-- AC and DC power-flow results stored in scenario records
-- schema validation for scenarios and questions
-- pandapower cross-validation against frozen scenario solves
-- reference examples, demo bundle, manifest, and Markdown report
-- reproducibility, CLI smoke, case loader, schema, and solver tests
+## Current Frozen Release
 
-## Supported cases
+The current frozen release directory is `datasets/pfbench/IEEE_Data_Description`.
 
-Always available built-in cases:
+Its dataset configuration remains:
 
-- `case14`
-- `case30`
+- dataset identifier: `pfbench`
+- dataset version: `1.1.0`
+- solved scenarios: `1060`
+- question items: `10600`
+- failed scenarios recorded: `0`
+- benchmark cases: `case14`, `case30`, `case39`, `case57`, `case118`, `case145`, `case300`
+- query families: `10`
+- scenario schema version: `0.5.0`
+- question schema version: `0.3.0`
+- approximate package size: `250 MB`
 
-Extended cases available through `pandapower` conversion:
+The release package is intended to be uploaded unchanged to an external data repository.
 
-- `case39`
-- `case57`
-- `case118`
-- `case145`
-- `case300`
-- `case89pegase`
-- `case_illinois200`
+## Validation Posture
 
-The default demo dataset uses:
+The repository now supports a stronger validation story suitable for data release:
 
-- `case14`
-- `case30`
-- `case39`
-- `case57`
-- `case118`
+- schema validation for scenario records and question items
+- validation of each `gold_answer` against its item-specific `response_schema`
+- uniqueness and split-leakage checks at release build time
+- explicit scenario completeness checks
+- external **pandapower cross-validation** against frozen scenario solves
+- copied configs and schemas inside the frozen release for standalone verification
+- checksum generation for archival integrity
 
-## Supported question families
+The pandapower cross-validation compares our stored AC/DC results against an independently solved pandapower reconstruction of the same mutated scenario. The release path is configured so that cross-validation artifacts are first-class outputs, not an afterthought.
+
+## Scenario Record Contents
+
+Each scenario record includes:
+
+- `grid_reference`
+- `base_grid_snapshot`
+- `scenario_spec`
+- `scenario_input_state`
+- `data_quality_flags`
+- `powerflow_results`
+- `provenance`
+- `metadata`
+
+Important retained quality annotations include:
+
+- missing source-case `base_kv` metadata
+- inherited source-case voltage-limit inconsistencies
+- inherited source-case generator reactive-limit inconsistencies
+- missing branch ratings
+- AC/DC power-balance residuals
+
+AC summaries also expose explicit shunt-demand and shunt-injection terms so reactive and active balance semantics are interpretable without reverse-engineering solver internals.
+
+## Question Families
+
+The current Phase 1 benchmark families are:
 
 - `direct_bus_vm`
 - `direct_bus_va`
@@ -74,55 +89,26 @@ The default demo dataset uses:
 - `compare_ac_dc_branch_p_from`
 - `is_voltage_violation_present`
 
-## Scenario record contents
+The current evaluation mode is `tool_or_structured_context_required`, meaning the benchmark is intended for systems that can inspect the scenario record or an equivalent structured context.
 
-Each scenario record includes:
+## Supported Cases
 
-- `grid_reference`
-- `base_grid_snapshot`
-- `scenario_spec`
-- `scenario_input_state`
-  - bus partition
-  - mutated buses / generators / branches
-  - bus loads
-  - generator setpoints
-  - branch state
-  - system totals
-- `data_quality_flags`
-  - missing base-kV metadata carried through from source cases
-  - inherited source-case voltage-limit inconsistencies
-  - inherited source-case generator reactive-limit inconsistencies
-  - missing branch-rating metadata
-  - AC/DC power-balance residuals
-- `powerflow_results.ac`
-  - bus / generator / branch results
-  - system summary with explicit shunt demand/injection terms for balance semantics
-- `powerflow_results.dc`
-  - bus / generator / branch results
-  - system summary
-- `provenance`
-- `metadata`
+Always available built-in cases:
 
-## Question item contents
+- `case14`
+- `case30`
 
-Each question item includes:
+Additional cases loaded through `pandapower` conversion:
 
-- `dataset_id`
-- `scenario_id`
-- `question_id`
-- `source_case`
-- `split`
-- `query_family`
-- `evaluation_mode`
-- `prompt`
-- `response_schema`
-- `gold_answer`
-- `grader`
-- `scenario_digest`
-- `provenance`
-- `metadata`
+- `case39`
+- `case57`
+- `case118`
+- `case145`
+- `case300`
+- `case89pegase`
+- `case_illinois200`
 
-## Environment
+## Quick Start
 
 Use **conda**.
 
@@ -131,32 +117,33 @@ conda env create -f environment.yml
 conda activate pfbench
 ```
 
-The environment includes an editable install, so the `pfbench` CLI is available immediately.
-
-## Quick start
+Basic local workflow:
 
 ```bash
-conda activate pfbench
-
 pfbench doctor
 pfbench generate-demo --config configs/dataset.yaml --out examples/demo_questions.jsonl
 pfbench cross-validate --scenarios examples/demo_scenarios.jsonl
 pfbench report --dataset examples/demo_questions.jsonl
-pfbench build-release --config configs/release_v1.yaml --out datasets/pfbench/v1
 pytest -q
 ```
 
-You can run the same commands through the module entrypoint:
+Build the frozen release package:
+
+```bash
+pfbench build-release --config configs/release_v1.yaml --out datasets/pfbench/IEEE_Data_Description
+```
+
+Equivalent module-entrypoint commands are also supported:
 
 ```bash
 python -m pfbench.cli doctor
 python -m pfbench.cli generate-demo --config configs/dataset.yaml --out examples/demo_questions.jsonl
 python -m pfbench.cli cross-validate --scenarios examples/demo_scenarios.jsonl
 python -m pfbench.cli report --dataset examples/demo_questions.jsonl
-python -m pfbench.cli build-release --config configs/release_v1.yaml --out datasets/pfbench/v1
+python -m pfbench.cli build-release --config configs/release_v1.yaml --out datasets/pfbench/IEEE_Data_Description
 ```
 
-## Demo outputs
+## Demo Artifacts
 
 `generate-demo` writes:
 
@@ -167,63 +154,52 @@ python -m pfbench.cli build-release --config configs/release_v1.yaml --out datas
 - `examples/reference_question_item.json`
 - `examples/reference_scenario_record.json`
 
-`report` writes:
-
-- `reports/pfbench_demo_report.md`
-
 `cross-validate` writes:
 
 - `examples/demo_cross_validation_summary.json`
 - `examples/demo_cross_validation_results.jsonl`
 - `examples/demo_cross_validation_report.md`
 
-## Frozen release package
+`report` writes:
 
-The submission-ready release workflow writes an independent archive-style directory:
+- `reports/pfbench_demo_report.md`
 
-- `datasets/pfbench/v1/questions.jsonl`
-- `datasets/pfbench/v1/scenarios.jsonl`
-- `datasets/pfbench/v1/failed_scenarios.jsonl`
-- `datasets/pfbench/v1/manifest.json`
-- `datasets/pfbench/v1/report.md`
-- `datasets/pfbench/v1/FAIR_METADATA.json`
-- `datasets/pfbench/v1/VALIDATION_SUMMARY.json`
-- `datasets/pfbench/v1/CHECKSUMS.sha256`
-- `datasets/pfbench/v1/README.md`
-- `datasets/pfbench/v1/RELEASE_NOTES.md`
-- `datasets/pfbench/v1/LICENSE_AND_REDISTRIBUTION.md`
-- `datasets/pfbench/v1/FIELD_DICTIONARY.md`
-- `datasets/pfbench/v1/SCHEMA_DOCS.md`
-- `datasets/pfbench/v1/QUALITY_REPORT.md`
-- `datasets/pfbench/v1/CROSS_VALIDATION_SUMMARY.json`
-- `datasets/pfbench/v1/cross_validation_results.jsonl`
-- `datasets/pfbench/v1/CROSS_VALIDATION_REPORT.md`
-- `datasets/pfbench/v1/SUBMISSION_FRAMING.md`
+## Frozen Release Package
+
+The submission-oriented release workflow writes an archive-style directory:
+
+- `datasets/pfbench/IEEE_Data_Description/questions.jsonl`
+- `datasets/pfbench/IEEE_Data_Description/scenarios.jsonl`
+- `datasets/pfbench/IEEE_Data_Description/failed_scenarios.jsonl`
+- `datasets/pfbench/IEEE_Data_Description/questions.parquet`
+- `datasets/pfbench/IEEE_Data_Description/scenarios.parquet`
+- `datasets/pfbench/IEEE_Data_Description/manifest.json`
+- `datasets/pfbench/IEEE_Data_Description/report.md`
+- `datasets/pfbench/IEEE_Data_Description/VALIDATION_SUMMARY.json`
+- `datasets/pfbench/IEEE_Data_Description/CROSS_VALIDATION_SUMMARY.json`
+- `datasets/pfbench/IEEE_Data_Description/cross_validation_results.jsonl`
+- `datasets/pfbench/IEEE_Data_Description/CROSS_VALIDATION_REPORT.md`
+- `datasets/pfbench/IEEE_Data_Description/FAIR_METADATA.json`
+- `datasets/pfbench/IEEE_Data_Description/CHECKSUMS.sha256`
+- `datasets/pfbench/IEEE_Data_Description/README.md`
+- `datasets/pfbench/IEEE_Data_Description/RELEASE_NOTES.md`
+- `datasets/pfbench/IEEE_Data_Description/LICENSE_AND_REDISTRIBUTION.md`
+- `datasets/pfbench/IEEE_Data_Description/FIELD_DICTIONARY.md`
+- `datasets/pfbench/IEEE_Data_Description/SCHEMA_DOCS.md`
+- `datasets/pfbench/IEEE_Data_Description/QUALITY_REPORT.md`
+- `datasets/pfbench/IEEE_Data_Description/SUBMISSION_FRAMING.md`
 - copied `configs/` and `schemas/` for standalone validation
-
-This folder is meant to be uploaded unchanged to the eventual third-party data repository.
 
 Repository note:
 
-- large generated `questions.jsonl`, `scenarios.jsonl`, and Parquet payloads under `datasets/pfbench/` are intentionally not tracked in Git
-- generate them locally with `pfbench build-release ...` or obtain them from the external data repository after deposition
-- the Git repository keeps the compact release metadata, documentation, configs, schemas, and reference items
+- large generated JSONL and Parquet payloads under `datasets/pfbench/` are intentionally not tracked in Git
+- the source repository is the generation method, not the long-term storage location for bulk release files
+- the recommended publication path is to deposit the frozen release package in an external archive and cite that deposited version in the paper
 
-## Default demo scale
-
-The default config currently generates:
-
-- 5 cases
-- 5 scenarios per case
-- 10 question families per scenario
-- 250 question items total when all scenarios solve successfully
-
-## Repository structure
+## Repository Layout
 
 ```text
 pfbench/
-├─ AGENTS.md
-├─ CODEX_PHASE_PLAN.md
 ├─ README.md
 ├─ environment.yml
 ├─ pyproject.toml
@@ -234,26 +210,31 @@ pfbench/
 ├─ src/pfbench/
 ├─ tests/
 ├─ examples/
-└─ reports/
+├─ reports/
+└─ datasets/
 ```
 
 Core code layout:
 
-- `src/pfbench/powerflow/`: case loading, scenario mutations, solver
-- `src/pfbench/generation/`: scenario/question artifact generation
-- `src/pfbench/grading/`: programmatic grading
-- `src/pfbench/evaluation/`: reporting
-- `src/pfbench/io/`: config and JSONL helpers
+- `src/pfbench/powerflow/`: case loading, scenario mutation, AC/DC solver
+- `src/pfbench/generation/`: scenario and question artifact generation
+- `src/pfbench/validation/`: pandapower-based external cross-validation
+- `src/pfbench/evaluation/`: reporting and leaderboard utilities
+- `src/pfbench/release.py`: frozen release package builder
+- `src/pfbench/io/`: YAML, JSONL, and export helpers
 
-## Notes
+## Scope and Limitations
 
-- Gold answers are solver-derived only.
-- Scenario generation is deterministic with respect to the configured seed.
-- Extended cases rely on `pandapower` being installed in the active environment.
-- The current solver assumes a single slack bus and does not enforce generator reactive power limits.
-- Release builds run an external pandapower cross-validation pass over the frozen scenarios, explicitly reapply the mutated branch in-service state after `from_ppc(...)`, and store the results as first-class artifacts.
-- Scenario records preserve source-case fidelity and expose inherited metadata issues through `data_quality_flags` instead of silently normalizing them away.
-- `grid_reference.source_url` is pinned to an upstream tag or installed package version when a stable reference is available.
-- `is_voltage_violation_present` excludes buses already flagged as inherited source-case voltage-limit inconsistencies so the label reflects scenario-specific violations.
-- The frozen release package is the primary archival artifact for a data-paper submission; the codebase is the supporting generation method.
-- Later phases can add OpenAI runner and agent benchmark functionality without changing the Phase 1 truth pipeline.
+- The benchmark is derived from standard benchmark cases, not utility operational data.
+- The current in-repository AC solver assumes exactly one slack bus.
+- Generator reactive-power limits are not enforced by the in-repository AC solver.
+- Some source-case artifacts are preserved rather than normalized away; these are exposed through `data_quality_flags`.
+- `is_voltage_violation_present` excludes buses already flagged as inherited source-case voltage-limit inconsistencies.
+- Extended cases depend on `pandapower` being installed in the active environment.
+- OpenAI-related evaluation remains future work and is not part of the current truth-generation pipeline.
+
+## Citation and Release Use
+
+For an IEEE Data Description style submission, the intended citation object is the **frozen dataset package**, with this repository cited as the supporting generation and validation codebase.
+
+Until external deposition is finalized, repository-local placeholders and release metadata should be treated as pre-publication material.
